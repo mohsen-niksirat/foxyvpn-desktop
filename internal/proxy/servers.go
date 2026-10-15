@@ -29,10 +29,23 @@ type Servers struct {
 	onBroken func()
 	closing  atomic.Bool
 	wg       sync.WaitGroup
+	udp      *udpTunnel
 }
 
 func NewServers(dialer Dialer, traffic func(up, down uint64), logf func(string, ...interface{}), onBroken func()) *Servers {
 	return &Servers{dialer: dialer, traffic: traffic, logf: logf, onBroken: onBroken}
+}
+
+// SetUDPDialer enables general UDP relay through the MASQUE tunnel.
+// nil disables it (DNS-only fallback).
+func (s *Servers) SetUDPDialer(d UDPDialer) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if d == nil {
+		s.udp = nil
+	} else {
+		s.udp = newUDPTunnel(d)
+	}
 }
 
 // StartSocks begins serving a SOCKS5 proxy on addr (idempotent).
@@ -113,15 +126,15 @@ func (s *Servers) acceptLoop(ln net.Listener, handler func(net.Conn)) {
 // --- SOCKS5 ---
 
 const (
-	socksVer      = 0x05
-	socksConnect  = 0x01
+	socksVer          = 0x05
+	socksConnect      = 0x01
 	socksUDPAssociate = 0x03
-	atypIPv4      = 0x01
-	atypDomain    = 0x03
-	atypIPv6      = 0x04
-	replyOK       = 0x00
-	replyFail     = 0x01
-	replyCmdUnsup = 0x07
+	atypIPv4          = 0x01
+	atypDomain        = 0x03
+	atypIPv6          = 0x04
+	replyOK           = 0x00
+	replyFail         = 0x01
+	replyCmdUnsup     = 0x07
 )
 
 func (s *Servers) handleSocks(conn net.Conn) {

@@ -54,8 +54,24 @@ func (s *Servers) relayUDP(pc *net.UDPConn, client *net.UDPAddr, pkt []byte) {
 	if err != nil {
 		return
 	}
-	if dst.port != 53 {
+	// General UDP goes through the MASQUE CONNECT-UDP tunnel when available.
+	if sess, ok := s.udp.get(dst.host, int(dst.port)); ok {
+		key := net.JoinHostPort(dst.host, itoa(int(dst.port)))
+		if err := sess.Write(payload); err != nil {
+			s.udp.remove(key)
+			return
+		}
+		resp, ok := sess.Read()
+		if !ok {
+			s.udp.remove(key)
+			return
+		}
+		header := pkt[:len(pkt)-len(payload)]
+		pc.WriteToUDP(append(append([]byte{}, header...), resp...), client)
 		return
+	}
+	if dst.port != 53 {
+		return // no MASQUE relay: only DNS falls back to TCP mode
 	}
 	resp, err := s.dnsOverTunnel(payload)
 	if err != nil {

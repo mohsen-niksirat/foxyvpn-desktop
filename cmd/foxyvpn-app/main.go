@@ -4,16 +4,21 @@
 package main
 
 import (
+	"context"
+	"crypto/tls"
 	"flag"
 	"fmt"
+	"github.com/mohsen-niksirat/foxyvpn-desktop/internal/tunnel"
 	"log"
 	"net"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 	"runtime/debug"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/mohsen-niksirat/foxyvpn-desktop/internal/core"
@@ -73,6 +78,38 @@ func main() {
 	proxies := proxy.NewServers(mgr, mgr.AddTraffic,
 		func(f string, a ...interface{}) { dlog("[proxy] "+f, a...) },
 		nil)
+	// MASQUE CONNECT-UDP relay for general UDP (QUIC, WebRTC, DoQ, ...).
+	proxies.SetUDPDialer(func(host string, port int) (proxy.UDPSession, error) {
+		_, bearer, template, ok := mgr.MasqueInfo()
+		if !ok {
+			return nil, fmt.Errorf("masque unavailable")
+		}
+		t := template
+		t = strings.ReplaceAll(t, "{target_host}", host)
+		t = strings.ReplaceAll(t, "{target_port}", strconv.Itoa(port))
+		t = strings.ReplaceAll(t, "%7Btarget_host%7D", host)
+		t = strings.ReplaceAll(t, "%7Btarget_port%7D", strconv.Itoa(port))
+		tu, err := url.Parse(t)
+		if err != nil {
+			return nil, err
+		}
+		if tu.Port() == "" {
+			tu.Host = net.JoinHostPort(tu.Hostname(), "443")
+		}
+		dialTLS := func(a string) (net.Conn, error) {
+			h, _, err := net.SplitHostPort(a)
+			if err != nil {
+				h = a
+			}
+			d := &net.Dialer{Timeout: 15 * time.Second}
+			return tls.DialWithDialer(d, "tcp", a, &tls.Config{ServerName: h, MinVersion: tls.VersionTLS12})
+		}
+		sess, err := tunnel.OpenUDPSession(context.Background(), tu.Host, bearer, t, dialTLS)
+		if err != nil {
+			return nil, err
+		}
+		return sess, nil
+	})
 
 	srv := ui.New(mgr, proxies)
 	srv.SetQuit(func() {

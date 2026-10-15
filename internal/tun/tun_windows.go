@@ -16,6 +16,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 )
 
@@ -63,6 +64,19 @@ misc:
   log-level: warn
   udp-read-write-timeout: 5000
 `, tunName, tunGUID, mtu, tunAddress, socksPort, socksHost, logPath)
+}
+
+// runHidden executes a command without flashing a console window.
+func runHiddenOut(name string, args ...string) ([]byte, error) {
+	cmd := exec.Command(name, args...)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true, CreationFlags: 0x08000000}
+	return cmd.Output()
+}
+
+func runHidden(name string, args ...string) ([]byte, error) {
+	cmd := exec.Command(name, args...)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true, CreationFlags: 0x08000000} // CREATE_NO_WINDOW
+	return cmd.CombinedOutput()
 }
 
 // Start extracts the embedded binaries into a temp dir, launches the tunnel
@@ -120,6 +134,7 @@ func Start(socksAddr, edgeAddr string) (*Runner, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	r.cancel = cancel
 	cmd := exec.CommandContext(ctx, filepath.Join(dir, "hev-socks5-tunnel.exe"), cfgPath)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true, CreationFlags: 0x08000000}
 	cmd.Dir = dir
 	r.cmd = cmd
 	if err := cmd.Start(); err != nil {
@@ -152,7 +167,8 @@ func Start(socksAddr, edgeAddr string) (*Runner, error) {
 // preferIPv4 raises the precedence of IPv4-mapped addresses so apps choose
 // IPv4 (which the tunnel carries) instead of unroutable IPv6 while TUN is up.
 func (r *Runner) preferIPv4() {
-	r.ipv6DefaultSet = exec.Command("netsh", "interface", "ipv6", "set", "prefixpolicies", "::ffff:0:0/96", "46", "4").Run() == nil
+	_, err := runHidden("netsh", "interface", "ipv6", "set", "prefixpolicies", "::ffff:0:0/96", "46", "4")
+	r.ipv6DefaultSet = err == nil
 }
 
 func (r *Runner) restoreIPv4() {
@@ -163,7 +179,7 @@ func (r *Runner) restoreIPv4() {
 }
 
 func (r *Runner) setRoutes() error {
-	if out, err := exec.Command("route", "add", r.edgeIP, "mask", "255.255.255.255", r.gateway, "metric", "1").CombinedOutput(); err != nil {
+	if out, err := runHidden("route", "add", r.edgeIP, "mask", "255.255.255.255", r.gateway, "metric", "1"); err != nil {
 		return fmt.Errorf("pinning edge route: %w (%s)", err, out)
 	}
 	r.routesOn = true
@@ -171,10 +187,10 @@ func (r *Runner) setRoutes() error {
 	if err != nil {
 		return err
 	}
-	if out, err := exec.Command("route", "add", "0.0.0.0", "mask", "128.0.0.0", tunAddress, "metric", "1", "if", idx).CombinedOutput(); err != nil {
+	if out, err := runHidden("route", "add", "0.0.0.0", "mask", "128.0.0.0", tunAddress, "metric", "1", "if", idx); err != nil {
 		return fmt.Errorf("adding default route (low half): %w (%s)", err, out)
 	}
-	if out, err := exec.Command("route", "add", "128.0.0.0", "mask", "128.0.0.0", tunAddress, "metric", "1", "if", idx).CombinedOutput(); err != nil {
+	if out, err := runHidden("route", "add", "128.0.0.0", "mask", "128.0.0.0", tunAddress, "metric", "1", "if", idx); err != nil {
 		return fmt.Errorf("adding default route (high half): %w (%s)", err, out)
 	}
 	return nil
@@ -186,7 +202,7 @@ func (r *Runner) clearRoutes() {
 		return
 	}
 	deleteDefaultRoutes()
-	exec.Command("route", "delete", r.edgeIP).Run()
+	_, _ = runHidden("route", "delete", r.edgeIP)
 	r.routesOn = false
 }
 
@@ -223,7 +239,7 @@ func resolveIPv4(host string) (string, error) {
 // defaultGateway returns the gateway of the active IPv4 default route: the
 // 0.0.0.0/0 entry with the lowest metric, ignoring our own tunnel address.
 func defaultGateway() (string, error) {
-	out, err := exec.Command("route", "print", "-4", "0.0.0.0").CombinedOutput()
+	out, err := runHidden("route", "print", "-4", "0.0.0.0")
 	if err != nil {
 		return "", fmt.Errorf("reading routing table: %w", err)
 	}
@@ -256,8 +272,8 @@ func clearStaleRoutes() {
 // deleteDefaultRoutes removes the two half-default routes that send traffic
 // into the tunnel. Errors are ignored because the routes may not exist.
 func deleteDefaultRoutes() {
-	exec.Command("route", "delete", "0.0.0.0", "mask", "128.0.0.0", tunAddress).Run()
-	exec.Command("route", "delete", "128.0.0.0", "mask", "128.0.0.0", tunAddress).Run()
+	_, _ = runHidden("route", "delete", "0.0.0.0", "mask", "128.0.0.0", tunAddress)
+	_, _ = runHidden("route", "delete", "128.0.0.0", "mask", "128.0.0.0", tunAddress)
 }
 
 // adapterIndex waits for the adapter with the given GUID to appear and returns
@@ -267,7 +283,7 @@ func adapterIndex(guid string) (string, error) {
 	script := fmt.Sprintf(`(Get-NetAdapter -IncludeHidden | Where-Object { $_.InterfaceGuid -eq '{%s}' }).ifIndex`, guid)
 	deadline := time.Now().Add(10 * time.Second)
 	for {
-		out, err := exec.Command("powershell", "-NoProfile", "-NonInteractive", "-Command", script).Output()
+		out, err := runHiddenOut("powershell", "-NoProfile", "-NonInteractive", "-Command", script)
 		if err == nil {
 			if idx := strings.TrimSpace(string(out)); idx != "" {
 				return idx, nil

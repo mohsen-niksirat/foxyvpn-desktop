@@ -591,3 +591,41 @@ func (m *Manager) TryAutoConnect() bool {
 	}()
 	return true
 }
+
+// pickMasque returns a MASQUE edge address and its CONNECT-UDP template for
+// the given country (falls back to the first available country).
+func pickMasque(countries []vpnclient.Country, code string) (addr, template string) {
+	for _, c := range countries {
+		if code != "" && !strings.EqualFold(c.Code, code) {
+			continue
+		}
+		for _, city := range c.Cities {
+			for _, srv := range city.Servers {
+				if srv.Quarantined {
+					continue
+				}
+				for _, pr := range srv.Protocols {
+					if strings.EqualFold(pr.Name, "masque") && pr.TemplateString != "" {
+						return fmt.Sprintf("%s:%d", pr.Host, pr.Port), pr.TemplateString
+					}
+				}
+			}
+		}
+	}
+	return "", ""
+}
+
+// MasqueInfo returns the active MASQUE edge address, bearer token and
+// CONNECT-UDP template, or ok=false when unavailable.
+func (m *Manager) MasqueInfo() (addr, bearer, template string, ok bool) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if m.pass == nil || m.countries == nil {
+		return "", "", "", false
+	}
+	a, t := pickMasque(m.countries, m.country)
+	if a == "" {
+		return "", "", "", false
+	}
+	return a, m.pass.BearerToken(), t, true
+}

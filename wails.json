@@ -1,0 +1,19 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "FoxyVPN Desktop",
+  "outputfilename": "foxyvpn-desktop-app",
+  "frontend:install": "",
+  "frontend:build": "",
+  "frontend:dev:watcher": "",
+  "frontend:dev:serverUrl": "auto",
+  "author": {
+    "name": "Mohsen Niksirat"
+  },
+  "info": {
+    "productName": "FoxyVPN Desktop",
+    "productVersion": "1.0.0",
+    "copyright": "Copyright \u00a9 2026 Mohsen Niksirat",
+    "comments": "Unofficial desktop client for the Firefox VPN free proxy"
+  },
+  "main": "cmd/foxyvpn-wails"
+}

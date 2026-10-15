@@ -4,3 +4,4 @@ build/
 .foxyvpn-desktop-token.json
 foxyvpn-debug.log
 foxyvpn-crash.log
+masque-probe

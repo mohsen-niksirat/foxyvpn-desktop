@@ -38,12 +38,9 @@ func New(mgr *core.Manager, proxy ProxyServers) *Server {
 }
 
 // Listen starts the UI HTTP server on 127.0.0.1:port. Returns the bound port.
-func (s *Server) Listen(port int) (int, error) {
-	ln, err := net.Listen("tcp", fmt.Sprintf("127.0.0.1:%d", port))
-	if err != nil {
-		return 0, err
-	}
-	s.ln = ln
+// Handler returns the UI's HTTP handler (routes + static assets). Used by
+// both Listen (browser mode) and the Wails desktop shell.
+func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 	// serve static/index.html at / (FileServer would list the dir otherwise)
 	mux.HandleFunc("/", withSecurityHeaders(func(w http.ResponseWriter, r *http.Request) {
@@ -68,7 +65,17 @@ func (s *Server) Listen(port int) (int, error) {
 	mux.HandleFunc("/api/proxy/stop", withSecurityHeaders(s.handleProxyStop))
 	mux.HandleFunc("/api/tun/start", withSecurityHeaders(rateLimited(s.handleTunStart, 2, time.Minute)))
 	mux.HandleFunc("/api/tun/stop", withSecurityHeaders(rateLimited(s.handleTunStop, 2, time.Minute)))
-	go http.Serve(ln, mux)
+	return mux
+}
+
+// Listen starts the UI HTTP server on 127.0.0.1:port. Returns the bound port.
+func (s *Server) Listen(port int) (int, error) {
+	ln, err := net.Listen("tcp", fmt.Sprintf("127.0.0.1:%d", port))
+	if err != nil {
+		return 0, err
+	}
+	s.ln = ln
+	go http.Serve(ln, s.Handler())
 	return ln.Addr().(*net.TCPAddr).Port, nil
 }
 

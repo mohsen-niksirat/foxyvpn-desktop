@@ -21,4 +21,4 @@ echo "Built build/${BINARY_NAME}-silent.exe"
 GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "-s -w" -o "build/${CLI_NAME}.exe" ./cmd/foxyvpn
 echo "Built build/${CLI_NAME}.exe"
 
-echo "All builds completed successfully."
+echo "All builds completed successfully."GOOS=windows GOARCH=amd64 go build -tags desktop,production -trimpath -ldflags "-s -w -H=windowsgui" -o build/foxyvpn-desktop-app.exe ./cmd/foxyvpn-wails

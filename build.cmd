@@ -17,3 +17,4 @@ if errorlevel 1 (
 echo Built build\foxyvpn-desktop.exe
 echo Built build\foxyvpn-desktop-silent.exe
 echo Built build\foxyvpn-cli.exe
+go build -tags desktop,production -trimpath -ldflags "-s -w -H=0x20000000" -o build\foxyvpn-desktop-app.exe .\cmd\foxyvpn-wails

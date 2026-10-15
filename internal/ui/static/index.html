@@ -6,53 +6,104 @@
 <title>FoxyVPN Desktop</title>
 <style>
 :root{
-  --bg:#0f1420; --card:#1a2130; --card2:#212a3d; --text:#e8edf7;
-  --muted:#8b97ad; --accent:#4f8cff; --accent2:#2f6ae0; --ok:#3ecf7a; --bad:#ff5c6c;
-  --radius:14px;
+  --bg:#0b0f1a; --bg2:#101728; --card:rgba(255,255,255,.045); --card2:rgba(255,255,255,.08);
+  --stroke:rgba(255,255,255,.09); --text:#eef2fb; --muted:#8b97ad;
+  --accent:#5b8cff; --accent2:#7c5bff; --ok:#2fe38f; --bad:#ff5c6c; --warn:#ffb454;
 }
 *{box-sizing:border-box; margin:0; padding:0}
-body{font-family:"Segoe UI",Vazirmatn,Tahoma,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; justify-content:center; padding:24px}
-.app{width:100%; max-width:680px}
-h1{font-size:1.25rem; margin-bottom:14px; display:flex; align-items:center; gap:10px}
-.dot{width:12px;height:12px;border-radius:50%;background:var(--muted); display:inline-block}
-.dot.on{background:var(--ok); box-shadow:0 0 10px var(--ok)}
-.dot.err{background:var(--bad)}
-.tabs{display:flex; gap:6px; margin-bottom:16px}
-.tabs button{flex:1; padding:10px; border:0; border-radius:10px 10px 0 0; background:var(--card); color:var(--muted); cursor:pointer; font-size:.95rem}
-.tabs button.active{background:var(--card2); color:var(--text)}
-.panel{background:var(--card); border-radius:0 var(--radius) var(--radius) var(--radius); padding:20px; display:none}
+body{
+  font-family:"Segoe UI",Vazirmatn,Tahoma,sans-serif; color:var(--text); min-height:100vh;
+  background:radial-gradient(1100px 600px at 15% -10%, #1b2a55 0%, transparent 55%),
+             radial-gradient(900px 500px at 110% 15%, #3a1e63 0%, transparent 50%),
+             linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+  background-attachment:fixed;
+  display:flex; justify-content:center; padding:22px 16px;
+}
+.app{width:100%; max-width:620px}
+h1{font-size:1.25rem; margin-bottom:16px; display:flex; align-items:center; gap:10px; letter-spacing:.3px}
+.logo{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:inline-flex;align-items:center;justify-content:center;font-size:15px}
+.lang-toggle{margin-left:auto; background:var(--card); border:1px solid var(--stroke); color:var(--muted);
+  border-radius:9px; padding:5px 12px; cursor:pointer; font-size:.8rem}
+.lang-toggle:hover{color:var(--text)}
+.tabs{display:flex; gap:6px; margin-bottom:14px}
+.tabs button{flex:1; padding:11px; border:1px solid transparent; border-radius:12px; background:transparent;
+  color:var(--muted); cursor:pointer; font-size:.92rem; transition:.15s}
+.tabs button.active{background:var(--card2); color:var(--text); border-color:var(--stroke)}
+.panel{display:none}
 .panel.active{display:block}
-.card{background:var(--card2); border-radius:var(--radius); padding:16px; margin-bottom:12px}
-.row{display:flex; justify-content:space-between; gap:10px; padding:6px 0; flex-wrap:wrap}
+.card{background:var(--card); border:1px solid var(--stroke); border-radius:16px; padding:18px; margin-bottom:12px;
+  backdrop-filter:blur(12px)}
+.row{display:flex; justify-content:space-between; gap:10px; padding:7px 0; flex-wrap:wrap; font-size:.92rem}
 .row .k{color:var(--muted)}
-button.primary{background:var(--accent); color:#fff; border:0; padding:12px 22px; border-radius:10px; font-size:1rem; cursor:pointer; width:100%}
-button.primary:hover{background:var(--accent2)}
+.mono{font-family:Consolas,monospace; word-break:break-all; font-size:.85rem}
+input,select{width:100%; padding:11px 12px; border-radius:11px; border:1px solid var(--stroke);
+  background:rgba(0,0,0,.25); color:var(--text); font-size:.95rem; margin:5px 0 10px; outline:none}
+input:focus,select:focus{border-color:var(--accent)}
+label{font-size:.82rem; color:var(--muted)}
+button.primary{background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border:0;
+  padding:12px 22px; border-radius:12px; font-size:.98rem; cursor:pointer; width:100%; transition:.15s}
+button.primary:hover{filter:brightness(1.12)}
 button.primary:disabled{opacity:.5; cursor:default}
-button.danger{background:var(--bad)}
-input,select{width:100%; padding:11px; border-radius:9px; border:1px solid #2c3852; background:#141b2a; color:var(--text); font-size:.95rem; margin:4px 0 10px}
-label{font-size:.85rem; color:var(--muted)}
-.mono{font-family:Consolas,monospace; word-break:break-all}
-a{color:var(--accent); text-decoration:none}
-a:hover{text-decoration:underline}
-.about-link{display:block; padding:10px 0; border-bottom:1px solid #2c3852}
-.about-link:last-child{border-bottom:0}
-.lang-toggle{float:right; background:transparent; border:1px solid #2c3852; color:var(--muted); border-radius:8px; padding:4px 10px; cursor:pointer; font-size:.8rem}
-.log{background:#0c101a; border-radius:10px; padding:12px; height:180px; overflow-y:auto; font-family:Consolas,monospace; font-size:.78rem; color:#9fb3d9; white-space:pre-wrap}
+button.danger{background:linear-gradient(135deg,#ff5c6c,#e04858)}
+.log{background:rgba(0,0,0,.35); border:1px solid var(--stroke); border-radius:11px; padding:12px; height:170px;
+  overflow-y:auto; font-family:Consolas,monospace; font-size:.76rem; color:#9fb3d9; white-space:pre-wrap}
 .dir-rtl{direction:rtl}
-.hero{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:12px}
-.badge{display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:999px; background:var(--card2); font-size:.85rem; color:var(--muted)}
-.badge.on{color:var(--ok)}
-.badge.err{color:var(--bad)}
-.btn-row{display:flex; gap:8px}
-.btn-row button{flex:1}
+.about-link{display:block; padding:11px 0; border-bottom:1px solid var(--stroke); color:var(--accent)}
+.about-link:last-child{border-bottom:0}
+a:hover{text-decoration:none; filter:brightness(1.2)}
 .section-title{font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin:4px 2px 8px}
-.toggle-row{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 0}
-.toggle-row small{color:var(--muted); display:block; margin-top:2px}
+
+/* ================= big circular power button ================= */
+.pbtn-wrap{display:flex; flex-direction:column; align-items:center; padding:14px 0 6px}
+.pbtn{
+  position:relative; width:190px; height:190px; border-radius:50%; cursor:pointer; border:0;
+  background:radial-gradient(circle at 35% 30%, rgba(255,255,255,.10), rgba(255,255,255,.02) 60%), var(--card);
+  border:2px solid var(--stroke);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px;
+  transition:transform .12s, box-shadow .35s, border-color .35s, color .35s; color:var(--muted);
+}
+.pbtn:hover{transform:scale(1.03)}
+.pbtn:active{transform:scale(.96)}
+.pbtn .picon{font-size:40px; line-height:1; transition:color .3s}
+.pbtn .plabel{font-size:.85rem; letter-spacing:.6px; text-transform:uppercase}
+.pbtn .ring{
+  position:absolute; inset:-10px; border-radius:50%;
+  border:3px solid transparent; opacity:0; transition:opacity .3s;
+}
+/* idle: subtle breathing outline */
+.pbtn.state-idle .ring{opacity:.45; border-top-color:var(--muted); border-right-color:transparent;
+  border-bottom-color:var(--muted); border-left-color:transparent; animation:spin 9s linear infinite}
+/* connecting: fast yellow spinner + pulsing border */
+.pbtn.state-connecting{color:var(--warn); border-color:var(--warn);
+  box-shadow:0 0 26px rgba(255,180,84,.25), inset 0 0 18px rgba(255,180,84,.10)}
+.pbtn.state-connecting .ring{opacity:1; border-top-color:var(--warn);
+  border-right-color:rgba(255,180,84,.25); animation:spin .9s cubic-bezier(.6,.1,.4,.9) infinite}
+.pbtn.state-connecting .picon{animation:throb .9s ease-in-out infinite}
+/* connected: green glow + slow halo pulse */
+.pbtn.state-connected{color:var(--ok); border-color:var(--ok);
+  box-shadow:0 0 40px rgba(47,227,143,.40), inset 0 0 26px rgba(47,227,143,.14)}
+.pbtn.state-connected .ring{opacity:1; border-top-color:var(--ok); border-right-color:rgba(47,227,143,.2);
+  animation:spin 14s linear infinite}
+.pbtn.state-connected .picon{animation:none}
+/* error: red + steady */
+.pbtn.state-error{color:var(--bad); border-color:var(--bad);
+  box-shadow:0 0 26px rgba(255,92,108,.28)}
+.pbtn.state-error .ring{opacity:1; border-top-color:var(--bad)}
+.pbtn.state-error .picon{animation:shake .4s ease-in-out}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes throb{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.state-caption{margin-top:12px; font-size:.92rem; color:var(--muted); min-height:1.3em; text-align:center}
+.state-caption.connected{color:var(--ok)}
+.state-caption.connecting{color:var(--warn)}
+.state-caption.error{color:var(--bad)}
+.picon-power{width:44px;height:44px}
 </style>
 </head>
 <body>
 <div class="app">
-  <h1><span class="dot" id="dot"></span> FoxyVPN Desktop <button class="lang-toggle" id="langBtn" onclick="toggleLang()">فارسی</button></h1>
+  <h1><span class="logo">🦊</span> FoxyVPN Desktop <button class="lang-toggle" id="langBtn" onclick="toggleLang()">فارسی</button></h1>
 
   <div class="tabs">
     <button id="tab-connect" class="active" onclick="showTab('connect')">Connect</button>
@@ -62,11 +113,19 @@ a:hover{text-decoration:underline}
 
   <!-- CONNECT -->
   <div id="panel-connect" class="panel active">
-    <div class="hero">
-      <span class="badge" id="badge"><span class="dot"></span><b id="s-state">—</b></span>
-    </div>
     <div class="card">
-      
+      <div class="pbtn-wrap">
+        <button class="pbtn state-idle" id="pbtn" onclick="pbtnClick()" aria-label="connect">
+          <span class="ring"></span>
+          <svg class="picon-power" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.2" stroke-linecap="round">
+            <path d="M12 2v9"/>
+            <path d="M18.4 6.6a9 9 0 1 1-12.8 0"/>
+          </svg>
+          <span class="plabel" id="plabel">CONNECT</span>
+        </button>
+        <div class="state-caption" id="pcaption">—</div>
+      </div>
       <div class="row"><span class="k" id="l-exit">Exit IP</span><span class="mono" id="s-exit">—</span></div>
       <div class="row"><span class="k" id="l-country">Country</span><b id="s-country">—</b></div>
       <div class="row"><span class="k" id="l-quota">Quota</span><span id="s-quota">—</span></div>
@@ -83,10 +142,6 @@ a:hover{text-decoration:underline}
     <div class="card">
       <label id="l-server">Server location</label>
       <select id="countrySel" onchange="setCountry(this.value)"><option value="">Last used / Auto</option></select>
-      <div class="btn-row">
-        <button class="primary" id="connectBtn" onclick="doConnect()">Connect</button>
-        <button class="primary danger" id="discBtn" onclick="doDisconnect()">Disconnect</button>
-      </div>
     </div>
     <div class="card">
       <label id="l-proxy">Local proxies</label>
@@ -95,10 +150,11 @@ a:hover{text-decoration:underline}
         <span>HTTP <input id="httpPort" type="number" value="8888" style="width:90px; display:inline-block"></span>
       </div>
       <button class="primary" id="proxyBtn" onclick="startProxies()">Start local proxies</button>
-      <div class="toggle-row" style="margin-top:10px">
-        <div><span id="l-tun-title">TUN Mode</span><small id="l-tunhint">Routes all system traffic. Requires Administrator.</small></div>
-        <button class="primary" id="tunBtn" onclick="toggleTun()" style="width:auto; padding:10px 16px">TUN Mode</button>
-      </div>
+      <div style="height:10px"></div>
+      <button class="primary" id="tunBtn" onclick="toggleTun()">TUN Mode (system VPN)</button>
+      <p style="color:var(--muted); font-size:.78rem; margin-top:6px" id="l-tunhint">TUN mode routes ALL system traffic. Requires running as Administrator on Windows.</p>
+      <div style="height:8px"></div>
+      <button class="primary danger" id="quitBtn" onclick="doQuit()">Quit app (exit completely)</button>
     </div>
     <div class="card">
       <label id="l-log">Log</label>
@@ -139,33 +195,40 @@ a:hover{text-decoration:underline}
 </div>
 
 <script>
-let lang="en", pollTimer=null;
+let lang="en", lastErr="", lastState="idle", tunActive=false, pollTimer=null;
 const T={
- en:{state:"State",exit:"Exit IP",country:"Country",quota:"Quota",pass:"Pass expires",traffic:"Traffic",
+ en:{exit:"Exit IP",country:"Country",quota:"Quota",pass:"Pass expires",traffic:"Traffic",
      email:"Firefox Account email",passLabel:"Password",signin:"Sign in",server:"Server location",
-     connect:"Connect",disconnect:"Disconnect",proxy:"Local proxies",start:"Start local proxies",
+     proxy:"Local proxies",start:"Start local proxies",
      log:"Log",tabs:["Connect","Settings","About"],ssocks:"Default SOCKS5 port",shttp:"Default HTTP proxy port",
      save:"Save settings",chrome:"Chrome launch command",
-     tun:"TUN Mode",tunhint:"Routes all system traffic. Requires Administrator.",
-     tunOn:"TUN Mode active — click to stop",about:"Unofficial desktop client for the Firefox VPN free proxy (50 GB/month with a Firefox account). For personal & educational use."},
- fa:{state:"وضعیت",exit:"IP خروجی",country:"کشور",quota:"سهمیه",pass:"انقضای پاس",traffic:"ترافیک",
+     tun:"TUN Mode (system VPN)",tunhint:"TUN mode routes ALL system traffic. Requires running as Administrator on Windows.",
+     tunOn:"TUN Mode active — click to stop",
+     quit:"Quit app (exit completely)",
+     about:"Unofficial desktop client for the Firefox VPN free proxy (50 GB/month with a Firefox account). For personal & educational use.",
+     st:{idle:"Disconnected — tap to connect", connecting:"Connecting…", connected:"Connected — tap to disconnect", error:"Error — tap to retry"},
+     lb:{idle:"CONNECT", connecting:"…", connected:"DISCONNECT", error:"RETRY"}},
+ fa:{exit:"IP خروجی",country:"کشور",quota:"سهمیه",pass:"انقضای پاس",traffic:"ترافیک",
      email:"ایمیل Firefox Account",passLabel:"رمز عبور",signin:"ورود",server:"محل سرور",
-     connect:"اتصال",disconnect:"قطع اتصال",proxy:"پروکسی محلی",start:"شروع پروکسی‌های محلی",
+     proxy:"پروکسی محلی",start:"شروع پروکسی‌های محلی",
      log:"لاگ",tabs:["اتصال","تنظیمات","درباره"],ssocks:"پورت پیش‌فرض SOCKS5",shttp:"پورت پیش‌فرض پروکسی HTTP",
      save:"ذخیره تنظیمات",chrome:"دستور اجرای کروم",
-     tun:"حالت TUN (وی‌پی‌ان کل سیستم)",tunhint:"حالت TUN تمام ترافیک سیستم را رد می‌کند. نیازمند Administrator.",
-     tunOn:"حالت TUN فعال — برای قطع کلیک کنید",about:"کلاینت دسکتاپ غیررسمی برای پروکسی رایگان Firefox VPN (سهمیه ۵۰ گیگ ماهانه با اکانت فایرفاکس). فقط برای استفاده شخصی و آموزشی."}
+     tun:"حالت TUN (وی‌پی‌ان کل سیستم)",tunhint:"حالت TUN تمام ترافیک سیستم را رد می‌کند. در ویندوز باید با Administrator اجرا شود.",
+     tunOn:"حالت TUN فعال — برای قطع کلیک کنید",
+     quit:"بستن کامل برنامه",
+     about:"کلاینت دسکتاپ غیررسمی برای پروکسی رایگان Firefox VPN (سهمیه ۵۰ گیگ ماهانه با اکانت فایرفاکس). فقط برای استفاده شخصی و آموزشی.",
+     st:{idle:"قطع شده — برای وصل شدن لمس کنید", connecting:"در حال اتصال…", connected:"وصل — برای قطع لمس کنید", error:"خطا — برای تلاش دوباره لمس کنید"},
+     lb:{idle:"اتصال", connecting:"…", connected:"قطع", error:"تلاش دوباره"}}
 };
 function applyLang(){
  const t=T[lang]; document.body.classList.toggle("dir-rtl", lang==="fa");
+ document.body.dir = lang==="fa"?"rtl":"ltr";
  document.getElementById("langBtn").textContent = lang==="fa"?"English":"فارسی";
- ["l-state","l-exit","l-country","l-quota","l-pass","l-traffic"].forEach((id,i)=>document.getElementById(id).textContent=[t.state,t.exit,t.country,t.quota,t.pass,t.traffic][i]);
+ ["l-exit","l-country","l-quota","l-pass","l-traffic"].forEach((id,i)=>document.getElementById(id).textContent=[t.exit,t.country,t.quota,t.pass,t.traffic][i]);
  document.getElementById("l-email").textContent=t.email;
  document.getElementById("l-pass-label").textContent=t.passLabel;
  document.getElementById("loginBtn").textContent=t.signin;
  document.getElementById("l-server").textContent=t.server;
- document.getElementById("connectBtn").textContent=t.connect;
- document.getElementById("discBtn").textContent=t.disconnect;
  document.getElementById("l-proxy").textContent=t.proxy;
  document.getElementById("proxyBtn").textContent=t.start;
  document.getElementById("l-log").textContent=t.log;
@@ -175,8 +238,10 @@ function applyLang(){
  document.getElementById("l-ssocks").textContent=t.ssocks;
  document.getElementById("l-shttp").textContent=t.shttp;
  document.getElementById("l-about-desc").textContent=t.about;
- document.getElementById("tunBtn").textContent=t.tun;
+ document.getElementById("tunBtn").textContent=tunActive?t.tunOn:t.tun;
  document.getElementById("l-tunhint").textContent=t.tunhint;
+ document.getElementById("quitBtn").textContent=t.quit;
+ renderPbtn(lastState);
 }
 function toggleLang(){ lang = lang==="en"?"fa":"en"; applyLang(); }
 function showTab(name){
@@ -194,6 +259,25 @@ function log(msg){
  const el=document.getElementById("log");
  el.textContent += msg+"\n"; el.scrollTop=el.scrollHeight;
 }
+/* ============ circular power button ============ */
+function renderPbtn(state){
+ lastState=state;
+ const btn=document.getElementById("pbtn"), lab=document.getElementById("plabel"),
+       cap=document.getElementById("pcaption");
+ const t=T[lang];
+ const states=["idle","connecting","connected","error"];
+ const s=states.includes(state)?state:"idle";
+ btn.classList.remove("state-idle","state-connecting","state-connected","state-error");
+ btn.classList.add("state-"+s);
+ lab.textContent=t.lb[s];
+ cap.textContent=t.st[s];
+ cap.className="state-caption "+s;
+}
+function pbtnClick(){
+ if(lastState==="connecting") return;            // busy: ignore
+ if(lastState==="connected"){ doDisconnect(); }  // tap when green → cut
+ else { doConnect(); }                           // idle/error → connect
+}
 async function doLogin(){
  const email=document.getElementById("email").value.trim();
  const password=document.getElementById("password").value;
@@ -204,13 +288,21 @@ async function doLogin(){
  if(r.error) alert("Login: "+r.error); else log(lang==="fa"?"ورود موفق":"Signed in");
 }
 async function doConnect(){
- document.getElementById("connectBtn").disabled=true;
- const country=document.getElementById("countrySel").value;
+ renderPbtn("connecting");
+ const sel=document.getElementById("countrySel");
+ const country = sel.value || (sel.options.length>1 ? sel.options[1].value : "");
  const r=await api("/api/connect",{country});
- document.getElementById("connectBtn").disabled=false;
- if(r.error) alert("Connect: "+r.error);
+ if(r.error){ renderPbtn("error"); alert("Connect: "+r.error); }
 }
-async function doDisconnect(){ await api("/api/disconnect",{}); }
+async function doDisconnect(){
+ await api("/api/disconnect",{});
+ renderPbtn("idle");
+}
+async function doQuit(){
+ await api("/api/quit",{});
+ renderPbtn("idle");
+ log(lang==="fa"?"برنامه بسته شد":"app exited");
+}
 async function setCountry(c){ await api("/api/country",{country:c}); }
 async function startProxies(){
  const sp=document.getElementById("socksPort").value, hp=document.getElementById("httpPort").value;
@@ -218,13 +310,6 @@ async function startProxies(){
  if(r.error) alert(r.error);
  else log((lang==="fa"?"پروکسی‌ها فعال شدند: ":"proxies started: ")+`SOCKS5 :${sp} · HTTP :${hp}`);
  document.getElementById("chromeCmd").textContent=`chrome.exe --proxy-server="socks5://127.0.0.1:${sp}"`;
-}
-let tunActive=false;
-function renderTun(){
- const t=T[lang];
- const btn=document.getElementById("tunBtn");
- btn.textContent = tunActive?t.tunOn:t.tun;
- btn.classList.toggle("danger", tunActive);
 }
 async function toggleTun(){
  const btn=document.getElementById("tunBtn");
@@ -234,7 +319,9 @@ async function toggleTun(){
  btn.disabled=false;
  if(r.error){ alert(r.error); return; }
  tunActive=!tunActive;
- renderTun();
+ const t=T[lang];
+ btn.textContent = tunActive?t.tunOn:t.tun;
+ btn.classList.toggle("danger", tunActive);
  log(tunActive?"TUN mode ON":"TUN mode OFF");
 }
 async function saveSettings(){
@@ -249,16 +336,13 @@ function fmtBytes(n){
 async function poll(){
  try{
   const s=await api("/api/status");
-  document.getElementById("s-state").textContent=s.state;
-  const cls=s.state==="connected"?" on":s.state==="error"?" err":"";
-  document.getElementById("badge").className="badge"+cls;
-  document.getElementById("dot").className="dot"+cls;
-  document.querySelector("#badge .dot").className="dot"+cls;
   document.getElementById("s-exit").textContent=s.exit_ip||"—";
   document.getElementById("s-country").textContent=s.exit_country||"—";
   document.getElementById("s-quota").textContent=s.quota_left?fmtBytes(+s.quota_left)+" / "+fmtBytes(+s.quota_max):"—";
   document.getElementById("s-pass").textContent=s.pass_expires&&s.pass_expires!=="0001-01-01T00:00:00Z"?s.pass_expires.replace("T"," ").slice(0,19):"—";
   document.getElementById("s-traffic").textContent=`↑${fmtBytes(s.up)} ↓${fmtBytes(s.down)}`;
+  const st=s.state==="connected"?"connected":s.state==="connecting"?"connecting":s.state==="error"?"error":"idle";
+  if(st!==lastState) renderPbtn(st);
   const sel=document.getElementById("countrySel");
   if(s.countries && sel.options.length<2){
    (s.countries||[]).forEach(c=>{
@@ -268,14 +352,13 @@ async function poll(){
    });
   }
   if(s.country && sel.value!==s.country && [...sel.options].some(o=>o.value===s.country)){ sel.value=s.country; }
-  if(tunActive!==s.tun){ tunActive=s.tun; renderTun(); }
+  if(s.tun!==undefined && tunActive!==s.tun){ tunActive=s.tun; const t=T[lang]; const b=document.getElementById("tunBtn"); b.textContent=tunActive?t.tunOn:t.tun; b.classList.toggle("danger",tunActive); }
   if(s.error && s.error!==lastErr){ log("ERROR: "+s.error); }
   lastErr=s.error;
  }catch(e){}
 }
-let lastErr="";
 document.getElementById("setSocks").addEventListener("focus", async ()=>{const s=await api("/api/settings"); document.getElementById("setSocks").value=s.socks_port; document.getElementById("setHttp").value=s.http_port;});
-applyLang(); poll(); pollTimer=setInterval(poll,2000);
+applyLang(); poll(); pollTimer=setInterval(poll,1500);
 </script>
 </body>
 </html>
