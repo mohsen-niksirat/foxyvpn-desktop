@@ -1,0 +1,31 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.25.x'
+
+    - name: Build CLI (Stage 1)
+      run: go build -o /tmp/foxyvpn-cli ./cmd/foxyvpn
+
+    - name: Build App (Stage 2 - non-Windows stub)
+      run: GOOS=linux GOARCH=amd64 go build -o /tmp/foxyvpn-app ./cmd/foxyvpn-app
+
+    - name: Run unit tests
+      run: go test ./internal/...
+
+    - name: Vet
+      run: go vet ./...

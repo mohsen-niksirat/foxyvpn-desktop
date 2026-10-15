@@ -1,0 +1,6 @@
+build/
+*.exe
+*.zip
+.foxyvpn-desktop-token.json
+foxyvpn-debug.log
+foxyvpn-crash.log

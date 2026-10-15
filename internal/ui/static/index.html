@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FoxyVPN Desktop</title>
+<style>
+:root{
+  --bg:#0f1420; --card:#1a2130; --card2:#212a3d; --text:#e8edf7;
+  --muted:#8b97ad; --accent:#4f8cff; --accent2:#2f6ae0; --ok:#3ecf7a; --bad:#ff5c6c;
+  --radius:14px;
+}
+*{box-sizing:border-box; margin:0; padding:0}
+body{font-family:"Segoe UI",Vazirmatn,Tahoma,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; justify-content:center; padding:24px}
+.app{width:100%; max-width:680px}
+h1{font-size:1.25rem; margin-bottom:14px; display:flex; align-items:center; gap:10px}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--muted); display:inline-block}
+.dot.on{background:var(--ok); box-shadow:0 0 10px var(--ok)}
+.dot.err{background:var(--bad)}
+.tabs{display:flex; gap:6px; margin-bottom:16px}
+.tabs button{flex:1; padding:10px; border:0; border-radius:10px 10px 0 0; background:var(--card); color:var(--muted); cursor:pointer; font-size:.95rem}
+.tabs button.active{background:var(--card2); color:var(--text)}
+.panel{background:var(--card); border-radius:0 var(--radius) var(--radius) var(--radius); padding:20px; display:none}
+.panel.active{display:block}
+.card{background:var(--card2); border-radius:var(--radius); padding:16px; margin-bottom:12px}
+.row{display:flex; justify-content:space-between; gap:10px; padding:6px 0; flex-wrap:wrap}
+.row .k{color:var(--muted)}
+button.primary{background:var(--accent); color:#fff; border:0; padding:12px 22px; border-radius:10px; font-size:1rem; cursor:pointer; width:100%}
+button.primary:hover{background:var(--accent2)}
+button.primary:disabled{opacity:.5; cursor:default}
+button.danger{background:var(--bad)}
+input,select{width:100%; padding:11px; border-radius:9px; border:1px solid #2c3852; background:#141b2a; color:var(--text); font-size:.95rem; margin:4px 0 10px}
+label{font-size:.85rem; color:var(--muted)}
+.mono{font-family:Consolas,monospace; word-break:break-all}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+.about-link{display:block; padding:10px 0; border-bottom:1px solid #2c3852}
+.about-link:last-child{border-bottom:0}
+.lang-toggle{float:right; background:transparent; border:1px solid #2c3852; color:var(--muted); border-radius:8px; padding:4px 10px; cursor:pointer; font-size:.8rem}
+.log{background:#0c101a; border-radius:10px; padding:12px; height:180px; overflow-y:auto; font-family:Consolas,monospace; font-size:.78rem; color:#9fb3d9; white-space:pre-wrap}
+.dir-rtl{direction:rtl}
+.hero{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:12px}
+.badge{display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:999px; background:var(--card2); font-size:.85rem; color:var(--muted)}
+.badge.on{color:var(--ok)}
+.badge.err{color:var(--bad)}
+.btn-row{display:flex; gap:8px}
+.btn-row button{flex:1}
+.section-title{font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin:4px 2px 8px}
+.toggle-row{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 0}
+.toggle-row small{color:var(--muted); display:block; margin-top:2px}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1><span class="dot" id="dot"></span> FoxyVPN Desktop <button class="lang-toggle" id="langBtn" onclick="toggleLang()">فارسی</button></h1>
+
+  <div class="tabs">
+    <button id="tab-connect" class="active" onclick="showTab('connect')">Connect</button>
+    <button id="tab-settings" onclick="showTab('settings')">Settings</button>
+    <button id="tab-about" onclick="showTab('about')">About</button>
+  </div>
+
+  <!-- CONNECT -->
+  <div id="panel-connect" class="panel active">
+    <div class="hero">
+      <span class="badge" id="badge"><span class="dot"></span><b id="s-state">—</b></span>
+    </div>
+    <div class="card">
+      
+      <div class="row"><span class="k" id="l-exit">Exit IP</span><span class="mono" id="s-exit">—</span></div>
+      <div class="row"><span class="k" id="l-country">Country</span><b id="s-country">—</b></div>
+      <div class="row"><span class="k" id="l-quota">Quota</span><span id="s-quota">—</span></div>
+      <div class="row"><span class="k" id="l-pass">Pass expires</span><span id="s-pass">—</span></div>
+      <div class="row"><span class="k" id="l-traffic">Traffic</span><span id="s-traffic">↑0 B ↓0 B</span></div>
+    </div>
+    <div class="card" id="loginCard">
+      <label id="l-email">Firefox Account email</label>
+      <input id="email" type="email" autocomplete="username">
+      <label id="l-pass-label">Password</label>
+      <input id="password" type="password" autocomplete="current-password">
+      <button class="primary" id="loginBtn" onclick="doLogin()">Sign in</button>
+    </div>
+    <div class="card">
+      <label id="l-server">Server location</label>
+      <select id="countrySel" onchange="setCountry(this.value)"><option value="">Last used / Auto</option></select>
+      <div class="btn-row">
+        <button class="primary" id="connectBtn" onclick="doConnect()">Connect</button>
+        <button class="primary danger" id="discBtn" onclick="doDisconnect()">Disconnect</button>
+      </div>
+    </div>
+    <div class="card">
+      <label id="l-proxy">Local proxies</label>
+      <div class="row">
+        <span>SOCKS5 <input id="socksPort" type="number" value="1080" style="width:90px; display:inline-block"></span>
+        <span>HTTP <input id="httpPort" type="number" value="8888" style="width:90px; display:inline-block"></span>
+      </div>
+      <button class="primary" id="proxyBtn" onclick="startProxies()">Start local proxies</button>
+      <div class="toggle-row" style="margin-top:10px">
+        <div><span id="l-tun-title">TUN Mode</span><small id="l-tunhint">Routes all system traffic. Requires Administrator.</small></div>
+        <button class="primary" id="tunBtn" onclick="toggleTun()" style="width:auto; padding:10px 16px">TUN Mode</button>
+      </div>
+    </div>
+    <div class="card">
+      <label id="l-log">Log</label>
+      <div class="log" id="log"></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="panel-settings" class="panel">
+    <div class="card">
+      <label id="l-ssocks">Default SOCKS5 port</label>
+      <input id="setSocks" type="number" value="1080">
+      <label id="l-shttp">Default HTTP proxy port</label>
+      <input id="setHttp" type="number" value="8888">
+      <button class="primary" onclick="saveSettings()">Save settings</button>
+    </div>
+    <div class="card">
+      <label id="l-chrome">Chrome launch command</label>
+      <div class="log" id="chromeCmd">chrome.exe --proxy-server="socks5://127.0.0.1:1080"</div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div id="panel-about" class="panel">
+    <div class="card">
+      <b>FoxyVPN Desktop</b>
+      <p style="color:var(--muted); margin:8px 0" id="l-about-desc">Unofficial desktop client for the Firefox VPN free proxy (50 GB/month with a Firefox account). For personal & educational use.</p>
+    </div>
+    <div class="card">
+      <a class="about-link" href="https://t.me/MyLeitner" target="_blank">📢 Telegram Channel — t.me/MyLeitner</a>
+      <a class="about-link" href="https://t.me/mohsenniksirat" target="_blank">✉️ Telegram Direct — t.me/mohsenniksirat</a>
+      <a class="about-link" href="https://github.com/mohsen-niksirat/" target="_blank">🐙 GitHub — github.com/mohsen-niksirat</a>
+    </div>
+    <div class="card">
+      <p style="color:var(--muted); font-size:.8rem">Credits: FoxyVPN (MIT) · firefox-vpn-client (MIT) · hev-socks5-tunnel</p>
+    </div>
+  </div>
+</div>
+
+<script>
+let lang="en", pollTimer=null;
+const T={
+ en:{state:"State",exit:"Exit IP",country:"Country",quota:"Quota",pass:"Pass expires",traffic:"Traffic",
+     email:"Firefox Account email",passLabel:"Password",signin:"Sign in",server:"Server location",
+     connect:"Connect",disconnect:"Disconnect",proxy:"Local proxies",start:"Start local proxies",
+     log:"Log",tabs:["Connect","Settings","About"],ssocks:"Default SOCKS5 port",shttp:"Default HTTP proxy port",
+     save:"Save settings",chrome:"Chrome launch command",
+     tun:"TUN Mode",tunhint:"Routes all system traffic. Requires Administrator.",
+     tunOn:"TUN Mode active — click to stop",about:"Unofficial desktop client for the Firefox VPN free proxy (50 GB/month with a Firefox account). For personal & educational use."},
+ fa:{state:"وضعیت",exit:"IP خروجی",country:"کشور",quota:"سهمیه",pass:"انقضای پاس",traffic:"ترافیک",
+     email:"ایمیل Firefox Account",passLabel:"رمز عبور",signin:"ورود",server:"محل سرور",
+     connect:"اتصال",disconnect:"قطع اتصال",proxy:"پروکسی محلی",start:"شروع پروکسی‌های محلی",
+     log:"لاگ",tabs:["اتصال","تنظیمات","درباره"],ssocks:"پورت پیش‌فرض SOCKS5",shttp:"پورت پیش‌فرض پروکسی HTTP",
+     save:"ذخیره تنظیمات",chrome:"دستور اجرای کروم",
+     tun:"حالت TUN (وی‌پی‌ان کل سیستم)",tunhint:"حالت TUN تمام ترافیک سیستم را رد می‌کند. نیازمند Administrator.",
+     tunOn:"حالت TUN فعال — برای قطع کلیک کنید",about:"کلاینت دسکتاپ غیررسمی برای پروکسی رایگان Firefox VPN (سهمیه ۵۰ گیگ ماهانه با اکانت فایرفاکس). فقط برای استفاده شخصی و آموزشی."}
+};
+function applyLang(){
+ const t=T[lang]; document.body.classList.toggle("dir-rtl", lang==="fa");
+ document.getElementById("langBtn").textContent = lang==="fa"?"English":"فارسی";
+ ["l-state","l-exit","l-country","l-quota","l-pass","l-traffic"].forEach((id,i)=>document.getElementById(id).textContent=[t.state,t.exit,t.country,t.quota,t.pass,t.traffic][i]);
+ document.getElementById("l-email").textContent=t.email;
+ document.getElementById("l-pass-label").textContent=t.passLabel;
+ document.getElementById("loginBtn").textContent=t.signin;
+ document.getElementById("l-server").textContent=t.server;
+ document.getElementById("connectBtn").textContent=t.connect;
+ document.getElementById("discBtn").textContent=t.disconnect;
+ document.getElementById("l-proxy").textContent=t.proxy;
+ document.getElementById("proxyBtn").textContent=t.start;
+ document.getElementById("l-log").textContent=t.log;
+ document.getElementById("tab-connect").textContent=t.tabs[0];
+ document.getElementById("tab-settings").textContent=t.tabs[1];
+ document.getElementById("tab-about").textContent=t.tabs[2];
+ document.getElementById("l-ssocks").textContent=t.ssocks;
+ document.getElementById("l-shttp").textContent=t.shttp;
+ document.getElementById("l-about-desc").textContent=t.about;
+ document.getElementById("tunBtn").textContent=t.tun;
+ document.getElementById("l-tunhint").textContent=t.tunhint;
+}
+function toggleLang(){ lang = lang==="en"?"fa":"en"; applyLang(); }
+function showTab(name){
+ document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+ document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+ document.getElementById("panel-"+name).classList.add("active");
+ document.getElementById("tab-"+name).classList.add("active");
+}
+async function api(path, body){
+ const opts = body ? {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)} : {};
+ const r = await fetch(path, opts);
+ return r.json();
+}
+function log(msg){
+ const el=document.getElementById("log");
+ el.textContent += msg+"\n"; el.scrollTop=el.scrollHeight;
+}
+async function doLogin(){
+ const email=document.getElementById("email").value.trim();
+ const password=document.getElementById("password").value;
+ if(!email||!password){alert(lang==="fa"?"ایمیل و رمز را وارد کنید":"Enter email and password");return}
+ document.getElementById("loginBtn").disabled=true;
+ const r=await api("/api/login",{email,password});
+ document.getElementById("loginBtn").disabled=false;
+ if(r.error) alert("Login: "+r.error); else log(lang==="fa"?"ورود موفق":"Signed in");
+}
+async function doConnect(){
+ document.getElementById("connectBtn").disabled=true;
+ const country=document.getElementById("countrySel").value;
+ const r=await api("/api/connect",{country});
+ document.getElementById("connectBtn").disabled=false;
+ if(r.error) alert("Connect: "+r.error);
+}
+async function doDisconnect(){ await api("/api/disconnect",{}); }
+async function setCountry(c){ await api("/api/country",{country:c}); }
+async function startProxies(){
+ const sp=document.getElementById("socksPort").value, hp=document.getElementById("httpPort").value;
+ const r=await api("/api/proxy/start",{socks:"127.0.0.1:"+sp, http:"127.0.0.1:"+hp});
+ if(r.error) alert(r.error);
+ else log((lang==="fa"?"پروکسی‌ها فعال شدند: ":"proxies started: ")+`SOCKS5 :${sp} · HTTP :${hp}`);
+ document.getElementById("chromeCmd").textContent=`chrome.exe --proxy-server="socks5://127.0.0.1:${sp}"`;
+}
+let tunActive=false;
+function renderTun(){
+ const t=T[lang];
+ const btn=document.getElementById("tunBtn");
+ btn.textContent = tunActive?t.tunOn:t.tun;
+ btn.classList.toggle("danger", tunActive);
+}
+async function toggleTun(){
+ const btn=document.getElementById("tunBtn");
+ btn.disabled=true;
+ const path = tunActive?"/api/tun/stop":"/api/tun/start";
+ const r=await api(path,{socks:"127.0.0.1:"+document.getElementById("socksPort").value});
+ btn.disabled=false;
+ if(r.error){ alert(r.error); return; }
+ tunActive=!tunActive;
+ renderTun();
+ log(tunActive?"TUN mode ON":"TUN mode OFF");
+}
+async function saveSettings(){
+ await api("/api/settings",{socks_port:+document.getElementById("setSocks").value, http_port:+document.getElementById("setHttp").value});
+ alert(lang==="fa"?"ذخیره شد":"Saved");
+}
+function fmtBytes(n){
+ if(!n) return "0 B";
+ const u=["B","KB","MB","GB","TB"]; let i=0; while(n>=1024&&i<u.length-1){n/=1024;i++}
+ return n.toFixed(1)+" "+u[i];
+}
+async function poll(){
+ try{
+  const s=await api("/api/status");
+  document.getElementById("s-state").textContent=s.state;
+  const cls=s.state==="connected"?" on":s.state==="error"?" err":"";
+  document.getElementById("badge").className="badge"+cls;
+  document.getElementById("dot").className="dot"+cls;
+  document.querySelector("#badge .dot").className="dot"+cls;
+  document.getElementById("s-exit").textContent=s.exit_ip||"—";
+  document.getElementById("s-country").textContent=s.exit_country||"—";
+  document.getElementById("s-quota").textContent=s.quota_left?fmtBytes(+s.quota_left)+" / "+fmtBytes(+s.quota_max):"—";
+  document.getElementById("s-pass").textContent=s.pass_expires&&s.pass_expires!=="0001-01-01T00:00:00Z"?s.pass_expires.replace("T"," ").slice(0,19):"—";
+  document.getElementById("s-traffic").textContent=`↑${fmtBytes(s.up)} ↓${fmtBytes(s.down)}`;
+  const sel=document.getElementById("countrySel");
+  if(s.countries && sel.options.length<2){
+   (s.countries||[]).forEach(c=>{
+    const code=c.code||c.Code, name=c.name||c.Name;
+    if(!code) return;
+    const o=document.createElement("option"); o.value=code; o.textContent=`${name} (${code})`; sel.appendChild(o);
+   });
+  }
+  if(s.country && sel.value!==s.country && [...sel.options].some(o=>o.value===s.country)){ sel.value=s.country; }
+  if(tunActive!==s.tun){ tunActive=s.tun; renderTun(); }
+  if(s.error && s.error!==lastErr){ log("ERROR: "+s.error); }
+  lastErr=s.error;
+ }catch(e){}
+}
+let lastErr="";
+document.getElementById("setSocks").addEventListener("focus", async ()=>{const s=await api("/api/settings"); document.getElementById("setSocks").value=s.socks_port; document.getElementById("setHttp").value=s.http_port;});
+applyLang(); poll(); pollTimer=setInterval(poll,2000);
+</script>
+</body>
+</html>
