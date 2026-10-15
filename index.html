@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FoxyVPN Desktop — وی‌پی‌ان رایگان روی ویندوز</title>
+<meta name="description" content="FoxyVPN Desktop — کلاینت دسکتاپ ویندوزی غیررسمی Firefox VPN: ۵۰ گیگ رایگان ماهانه، ۳۵ کشور، یک لمس وصل شو.">
+<style>
+:root{
+  --bg:#0b0f1a; --bg2:#101728; --card:rgba(255,255,255,.045); --card2:rgba(255,255,255,.08);
+  --stroke:rgba(255,255,255,.09); --text:#eef2fb; --muted:#9aa7bf;
+  --accent:#5b8cff; --accent2:#7c5bff; --ok:#2fe38f; --fox:#ff7a2f; --bad:#ff5c6c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:Vazirmatn,"Segoe UI",Tahoma,sans-serif; color:var(--text); line-height:1.9;
+  background:
+    radial-gradient(1100px 600px at 85% -10%, #1b2a55 0%, transparent 55%),
+    radial-gradient(900px 500px at -10% 15%, #3a1e63 0%, transparent 50%),
+    linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);
+  background-attachment:fixed;
+}
+.wrap{max-width:880px; margin:0 auto; padding:32px 20px 80px}
+
+/* header */
+.hero{text-align:center; padding:48px 0 36px}
+.logo{width:96px;height:96px;border-radius:24px;margin:0 auto 20px;
+  background:linear-gradient(135deg,#1b2a55,#3a1e63); border:1px solid var(--stroke);
+  display:flex;align-items:center;justify-content:center;font-size:52px;
+  box-shadow:0 12px 40px rgba(91,140,255,.25)}
+h1{font-size:2.1rem; margin-bottom:6px}
+h1 .fox{color:var(--fox)}
+.tagline{color:var(--muted); font-size:1.05rem; max-width:560px; margin:0 auto}
+.badges{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:18px}
+.badge{background:var(--card); border:1px solid var(--stroke); border-radius:999px;
+  padding:5px 14px; font-size:.8rem; color:var(--muted)}
+.badge b{color:var(--ok)}
+.cta{display:inline-block; margin-top:22px; background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff; text-decoration:none; padding:13px 34px; border-radius:14px; font-weight:700; font-size:1rem;
+  transition:.15s; box-shadow:0 8px 24px rgba(91,140,255,.3)}
+.cta:hover{filter:brightness(1.15); transform:translateY(-2px)}
+
+/* sections */
+section{margin-top:44px}
+h2{font-size:1.45rem; margin-bottom:16px; display:flex; align-items:center; gap:10px}
+h2::before{content:""; width:5px; height:26px; border-radius:3px;
+  background:linear-gradient(180deg,var(--accent),var(--accent2)); display:inline-block}
+.card{background:var(--card); border:1px solid var(--stroke); border-radius:16px; padding:22px;
+  backdrop-filter:blur(12px); margin-bottom:12px}
+
+/* features grid */
+.grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px}
+.feat{background:var(--card); border:1px solid var(--stroke); border-radius:16px; padding:18px}
+.feat .ic{font-size:26px; margin-bottom:8px}
+.feat b{display:block; margin-bottom:4px}
+.feat p{color:var(--muted); font-size:.9rem}
+
+/* steps */
+.step{display:flex; gap:16px; padding:18px 0; border-bottom:1px solid var(--stroke)}
+.step:last-child{border-bottom:0}
+.num{flex-shrink:0; width:40px; height:40px; border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.05rem}
+.step b{display:block; margin-bottom:4px}
+.step p{color:var(--muted); font-size:.93rem}
+.step code{background:rgba(0,0,0,.35); border:1px solid var(--stroke); padding:2px 8px;
+  border-radius:6px; font-size:.85em; font-family:Consolas,monospace; direction:ltr; display:inline-block}
+
+/* power button demo */
+.pdemo{display:flex; flex-direction:column; align-items:center; padding:10px 0}
+.pbtn{position:relative; width:150px; height:150px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, rgba(255,255,255,.10), rgba(255,255,255,.02) 60%), var(--card);
+  border:2px solid var(--ok); color:var(--ok);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+  box-shadow:0 0 40px rgba(47,227,143,.4), inset 0 0 26px rgba(47,227,143,.14)}
+.pbtn svg{width:38px; height:38px}
+.pbtn span{font-size:.78rem; letter-spacing:.6px}
+.pbtn .ring{position:absolute; inset:-10px; border-radius:50%;
+  border:3px solid transparent; border-top-color:var(--ok); border-right-color:rgba(47,227,143,.2);
+  animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pcap{margin-top:14px; color:var(--ok); font-size:.95rem}
+
+/* warnings */
+.warn{border-right:3px solid var(--fox); background:rgba(255,122,47,.06)}
+.warn b{color:var(--fox)}
+.bad2{border-right:3px solid var(--bad); background:rgba(255,92,108,.06)}
+.bad2 b{color:var(--bad)}
+ul.clean{list-style:none}
+ul.clean li{padding:6px 0; color:var(--muted); font-size:.93rem}
+ul.clean li::before{content:"◂ "; color:var(--accent)}
+
+/* links & footer */
+a{color:var(--accent)}
+.links{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+.links a{background:var(--card); border:1px solid var(--stroke); border-radius:12px;
+  padding:10px 18px; text-decoration:none; font-size:.92rem; transition:.15s}
+.links a:hover{border-color:var(--accent); transform:translateY(-2px)}
+footer{text-align:center; margin-top:56px; color:var(--muted); font-size:.85rem}
+footer .heart{color:var(--bad)}
+@media(max-width:600px){ h1{font-size:1.6rem} .hero{padding:32px 0 24px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="logo">🦊</div>
+    <h1>Foxy<span class="fox">VPN</span> Desktop</h1>
+    <p class="tagline">وی‌پی‌ان رایگان ۵۰ گیگابایت ماهانه روی ویندوز — با یک لمس وصل شو، همه برنامه‌ها از تونل رد بشن</p>
+    <div class="badges">
+      <span class="badge"><b>●</b> نسخه ۱.۰.۰</span>
+      <span class="badge">ویندوز ۱۰ / ۱۱</span>
+      <span class="badge">سورس باز — MIT</span>
+      <span class="badge">بدون نصب</span>
+    </div>
+    <a class="cta" href="https://github.com/mohsen-niksirat/foxyvpn-desktop/releases/latest">⬇️ دانلود آخرین نسخه</a>
+  </div>
+
+  <!-- FEATURES -->
+  <section>
+    <h2>امکانات</h2>
+    <div class="grid">
+      <div class="feat"><div class="ic">⭕</div><b>وصل شدن با یک لمس</b><p>دکمه دایره‌ای حرفه‌ای؛ سبز شد یعنی وصله، دوباره بزنی قطع می‌شه</p></div>
+      <div class="feat"><div class="ic">🌍</div><b>۳۵ کشور</b><p>آمریکا، هلند، آلمان و... — آخرین کشورت ذخیره می‌شه و دفعه بعد اتومات همون وصل می‌شه</p></div>
+      <div class="feat"><div class="ic">🖥️</div><b>پروکسی سیستمی خودکار</b><p>موقع وصل شدن، کل ویندوز از تونل رد می‌شه؛ موقع قطع همه‌چیز برمی‌گرده</p></div>
+      <div class="feat"><div class="ic">🔒</div><b>حالت TUN</b><p>تونل واقعی کل سیستم — بدون نیاز به تنظیم مرورگر (نیازمند Run as Administrator)</p></div>
+      <div class="feat"><div class="ic">🔑</div><b>لاگین یک‌بار برای همیشه</b><p>توکن ذخیره می‌شه و برنامه موقع باز شدن اتومات وصل می‌شه</p></div>
+      <div class="feat"><div class="ic">📊</div><b>نظارت زنده</b><p>IP خروجی، کشور، سهمیه باقی‌مانده و مصرف ترافیک همیشه جلوی چشمت</p></div>
+      <div class="feat"><div class="ic">⚡</div><b>UDP کامل</b><p>QUIC، WebRTC و DNS رمزنگاری‌شده از طریق تونل MASQUE رد می‌شن</p></div>
+      <div class="feat"><div class="ic">🦊</div><b>کاملاً بومی</b><p>پنجره ویندوزی واقعی با آیکون اختصاصی — بدون CMD، بدون وابستگی</p></div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section>
+    <h2>چطور کار می‌کند؟</h2>
+    <div class="card">
+      <p style="color:var(--muted); font-size:.95rem">
+        FoxyVPN Desktop با اکانت رایگان فایرفاکس وارد می‌شود، از سرویس Guardian موزیلا یک proxy pass می‌گیرد
+        و یک تونل رمزنگاری‌شده HTTP/2 به شبکه لبه Fastly برقرار می‌کند — همان زیرساختی که خود Firefox VPN از آن استفاده می‌کند.
+        بعد یک پروکسی SOCKS5/HTTP محلی سرو می‌کند و ترافیک سیستم را از همان تونل رد می‌کند.
+      </p>
+    </div>
+  </section>
+
+  <!-- SETUP -->
+  <section id="setup">
+    <h2>آموزش فعالسازی — ۳ دقیقه</h2>
+    <div class="card">
+
+      <div class="step">
+        <div class="num">۱</div>
+        <div>
+          <b>اکانت Firefox بساز</b>
+          <p>به <a href="https://accounts.firefox.com" target="_blank">accounts.firefox.com</a> برو و با ایمیل واقعی خودت یک اکانت رایگان بساز. (بدون نیاز به کارت بانکی یا اشتراک)</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">۲</div>
+        <div>
+          <b>برنامه را دانلود و اجرا کن</b>
+          <p>از <a href="https://github.com/mohsen-niksirat/foxyvpn-desktop/releases/latest" target="_blank">صفحه Releases</a> فایل <code>foxyvpn-desktop-app-win64.zip</code> را بگیر، بازش کن و روی <code>foxyvpn-desktop-app.exe</code> دابل‌کلیک بزن. پنجره اپ باز می‌شود — نیازی به نصب نیست.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">۳</div>
+        <div>
+          <b>وارد شو</b>
+          <p>ایمیل و رمز اکانت فایرفاکست را وارد کن و «ورود» را بزن. فقط همین یک بار — از دفعه بعد برنامه خودش اتومات وصل می‌شود.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">۴</div>
+        <div>
+          <b>وصل شو</b>
+          <p>روی دکمه دایره‌ای بزرگ بزن. حلقه زرد می‌چرخد («در حال اتصال…») و وقتی دایره سبز شد، وصل هستی ✅ — کشور دلخواهت را هم از منوی بالا انتخاب کن.</p>
+          <div class="pdemo">
+            <div class="pbtn">
+              <span class="ring"></span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                <path d="M12 2v9"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/>
+              </svg>
+              <span>DISCONNECT</span>
+            </div>
+            <div class="pcap">وصل — برای قطع لمس کنید</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">۵</div>
+        <div>
+          <b>لذت ببر</b>
+          <p>مرورگر و همه برنامه‌ها حالا از تونل رد می‌شوند. امتحان کن: <code>whatismyipaddress.com</code> — باید IP کشور انتخابی‌ات را ببینی. 🚀</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TUN -->
+  <section>
+    <h2>حالت TUN (وی‌پی‌ان کل سیستم)</h2>
+    <div class="card warn">
+      <p>اگر می‌خواهی <b>همه</b> ترافیک سیستم (حتی برنامه‌هایی که تنظیم پروکسی ندارند) از تونل برود:</p>
+      <ul class="clean">
+        <li>برنامه را با <b>Run as Administrator</b> اجرا کن</li>
+        <li>دکمه «TUN Mode» را بزن — یک آداپتور مجازی ساخته می‌شود و کل ترافیک رد می‌شود</li>
+        <li>برای برگشت، دوباره همان دکمه را بزن یا Disconnect کن</li>
+      </ul>
+      <p style="color:var(--muted); font-size:.88rem; margin-top:8px">
+        ⚠️ هشدار: حالت TUN کل ترافیک را رد می‌کند؛ اگر از RDP یا شبکه محلی استفاده می‌کنی، اول اتصالت را چک کن.
+      </p>
+    </div>
+  </section>
+
+  <!-- TROUBLESHOOT -->
+  <section>
+    <h2>عیب‌یابی</h2>
+    <div class="card">
+      <ul class="clean">
+        <li><b style="color:var(--text)">پنجره سفید باز شد؟</b> — WebView2 Runtime را نصب کن (ویندوزهای جدید معمولاً دارند)</li>
+        <li><b style="color:var(--text)">اتصال وصل است ولی سایت باز نمی‌شود؟</b> — یک بار Disconnect و Connect بزن؛ فایل <code>foxyvpn-debug.log</code> کنار برنامه را چک کن</li>
+        <li><b style="color:var(--text)">پروکسی سیستم روشن ماند؟</b> — بعد از Quit باید خاموش شود؛ اگر ماند: Settings ← Network ← Proxy را دستی off کن</li>
+        <li><b style="color:var(--text)">پورت اشغال است؟</b> — از تب تنظیمات، پورت SOCKS5/HTTP را عوض کن</li>
+        <li><b style="color:var(--text)">خطای ۴۲۹ یا سهمیه؟</b> — سهمیه ۵۰ گیگی ماهانه تمام شده؛ ماه بعد دوباره پر می‌شود</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DISCLAIMER -->
+  <section>
+    <h2>محدودیت‌ها و مسئولیت</h2>
+    <div class="card bad2">
+      <ul class="clean">
+        <li>این پروژه <b>غیررسمی</b> است و به Mozilla وابستگی ندارد</li>
+        <li>فقط برای <b>استفاده شخصی و آموزشی</b> — برای دور زدن پرداخت یا سوءاستفاده از سرویس Mozilla نیست</li>
+        <li>با یک اکانت واقعی خودت استفاده کن؛ ساخت اکانت‌های متعدد نقض قوانین سرویس است</li>
+        <li>پروتکل‌های استفاده‌شده از ریپوهای متن‌باز <a href="https://github.com/Vauth/FoxyVPN">FoxyVPN</a> و <a href="https://github.com/UjuiUjuMandan/firefox-vpn-client">firefox-vpn-client</a> استخراج شده‌اند</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- LINKS -->
+  <section>
+    <h2>لینک‌ها</h2>
+    <div class="links">
+      <a href="https://github.com/mohsen-niksirat/foxyvpn-desktop" target="_blank">🐙 گیت‌هاب</a>
+      <a href="https://github.com/mohsen-niksirat/foxyvpn-desktop/releases/latest" target="_blank">⬇️ دانلود</a>
+      <a href="https://t.me/MyLeitner" target="_blank">📢 کانال تلگرام</a>
+      <a href="https://t.me/mohsenniksirat" target="_blank">✉️ ارتباط مستقیم</a>
+    </div>
+  </section>
+
+  <footer>
+    ساخته شده با <span class="heart">♥</span> توسط محسن نیک‌سیرات — Go + Wails + hev-socks5-tunnel — لایسنس MIT
+  </footer>
+</div>
+</body>
+</html>
