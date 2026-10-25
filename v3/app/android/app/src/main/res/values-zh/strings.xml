@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel">VPN</string>
+    <string name="notification_connecting">正在连接…</string>
+    <string name="notification_no_network">无网络连接</string>
+    <string name="notification_proxy">仅代理 · %1$s</string>
+    <string name="notification_stop">断开连接</string>
+    <!-- The home-screen widget: its name and description in the widget
+         picker, and what its button does (for screen readers). -->
+    <string name="widget_label">快速连接</string>
+    <string name="widget_description">一键连接或断开</string>
+    <string name="widget_connect">点击连接</string>
+    <string name="widget_disconnect">点击断开</string>
+</resources>

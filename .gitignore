@@ -1,5 +1,7 @@
 build/
 *.exe
+!internal/tun/bin/*.exe
+!v3/core/internal/tun/bin/*.exe
 *.zip
 .foxyvpn-desktop-token.json
 foxyvpn-debug.log

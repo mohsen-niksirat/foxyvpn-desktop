@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel">VPN</string>
+    <string name="notification_connecting">সংযোগ হচ্ছে…</string>
+    <string name="notification_no_network">ইন্টারনেট সংযোগ নেই</string>
+    <string name="notification_proxy">শুধু প্রক্সি · %1$s</string>
+    <string name="notification_stop">সংযোগ বিচ্ছিন্ন</string>
+    <!-- The home-screen widget: its name and description in the widget
+         picker, and what its button does (for screen readers). -->
+    <string name="widget_label">দ্রুত সংযোগ</string>
+    <string name="widget_description">এক ট্যাপে সংযোগ বা সংযোগ বিচ্ছিন্ন করুন</string>
+    <string name="widget_connect">সংযোগ করতে ট্যাপ করুন</string>
+    <string name="widget_disconnect">সংযোগ বিচ্ছিন্ন করতে ট্যাপ করুন</string>
+</resources>

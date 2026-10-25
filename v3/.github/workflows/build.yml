@@ -1,0 +1,310 @@
+# Tests every push and pull request. A tag "v<version>" (the version in
+# app/pubspec.yaml) also builds Windows, macOS, Android, Linux, and the Linux
+# core, and publishes them as a GitHub release, each file twice: under a
+# fixed name, which the README's releases/latest/download links fetch, and
+# with the version in its name (Firefox-VPN-1.2.3-Android-arm64-v8a.apk),
+# which the release's own notes and the app's Download button use, so a
+# downloaded file says which version it is. "Run workflow" builds without
+# publishing.
+#
+# Secrets for the Android release key (required for a tag):
+#   ANDROID_KEYSTORE_BASE64    the .jks file, base64-encoded
+#   ANDROID_KEYSTORE_PASSWORD  its password (PKCS12: also the key's)
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+    # A change to the documentation alone (READMEs, docs/, screenshots)
+    # runs nothing; GitHub does not apply this filter to tags, so a release
+    # always builds.
+    paths-ignore: ['**.md', 'docs/**', 'LICENSE']
+  pull_request:
+    paths-ignore: ['**.md', 'docs/**', 'LICENSE']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+env:
+  FLUTTER_VERSION: 3.47.7
+  GOMOBILE_VERSION: v0.0.0-20260908204917-8b95e45f8d3e
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: version
+        name: Version
+        run: |
+          v="$(sed -n 's/^version:[[:space:]]*\([0-9]*\.[0-9]*\.[0-9]*\).*/\1/p' app/pubspec.yaml)"
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+          if [[ "$GITHUB_REF" == refs/tags/* && "$GITHUB_REF_NAME" != "v$v" ]]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match app/pubspec.yaml ($v)"
+            exit 1
+          fi
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: core/go.mod
+          cache-dependency-path: core/go.sum
+      - name: Core
+        working-directory: core
+        run: |
+          go vet ./...
+          go test ./...
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - name: App
+        working-directory: app
+        run: |
+          flutter pub get
+          flutter analyze
+          flutter test
+
+  windows:
+    needs: test
+    # Built unless the repository variable PLATFORMS (Settings, Secrets and
+    # variables, Actions, Variables) is set and leaves it out, e.g. "linux".
+    if: (startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch') && (vars.PLATFORMS == '' || contains(vars.PLATFORMS, 'windows'))
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: core/go.mod
+          cache-dependency-path: core/go.sum
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - name: Inno Setup
+        run: choco upgrade innosetup -y --no-progress
+      - name: Build
+        shell: pwsh
+        run: ./scripts/build-windows.ps1
+      - name: Release names
+        shell: pwsh
+        run: |
+          $v = '${{ needs.test.outputs.version }}'
+          New-Item -ItemType Directory out | Out-Null
+          Move-Item "dist/Firefox-VPN-$v-Windows-x64.zip" out/Firefox-VPN-Windows-x64.zip
+          Move-Item "dist/Firefox-VPN-$v-Windows-Setup-x64.exe" out/Firefox-VPN-Windows-Setup-x64.exe
+      - uses: actions/upload-artifact@v7
+        with:
+          name: windows
+          path: out/*
+          if-no-files-found: error
+
+  android:
+    needs: test
+    if: (startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch') && (vars.PLATFORMS == '' || contains(vars.PLATFORMS, 'android'))
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: core/go.mod
+          cache-dependency-path: core/go.sum
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - name: NDK and gomobile
+        run: |
+          ndk="$(sed -n 's/.*ndkVersion = "\(.*\)".*/\1/p' app/android/app/build.gradle.kts)"
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "ndk;$ndk" > /dev/null
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/$ndk" >> "$GITHUB_ENV"
+          go install "golang.org/x/mobile/cmd/gomobile@$GOMOBILE_VERSION" "golang.org/x/mobile/cmd/gobind@$GOMOBILE_VERSION"
+      - name: Release key
+        env:
+          KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE" ]; then
+            if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+              echo "::error::a release needs the ANDROID_KEYSTORE_BASE64 and ANDROID_KEYSTORE_PASSWORD secrets"
+              exit 1
+            fi
+            echo "::warning::no release key: the APKs are signed with a debug key"
+            exit 0
+          fi
+          printf '%s' "$KEYSTORE" | base64 -d > app/android/release.jks
+          printf 'storeFile=../release.jks\nstorePassword=%s\nkeyAlias=release\nkeyPassword=%s\n' "$PASSWORD" "$PASSWORD" > app/android/key.properties
+      - name: Build
+        run: |
+          v='${{ needs.test.outputs.version }}'
+          mkdir -p app/android/app/libs
+          (cd core && gomobile bind -target=android -androidapi 24 -trimpath \
+            -ldflags "-s -w -X github.com/armanlife/firefox-vpn-client/core/internal/version.Current=$v" \
+            -o ../app/android/app/libs/core.aar ./mobile)
+          cd app
+          flutter pub get
+          mkdir -p ../out
+          flutter build apk --release --split-per-abi --dart-define=APP_VERSION=$v
+          for abi in arm64-v8a armeabi-v7a x86_64; do
+            cp "build/app/outputs/flutter-apk/app-$abi-release.apk" "../out/Firefox-VPN-Android-$abi.apk"
+          done
+          flutter build apk --release --dart-define=APP_VERSION=$v
+          cp build/app/outputs/flutter-apk/app-release.apk ../out/Firefox-VPN-Android-universal.apk
+      - name: Remove the key
+        if: always()
+        run: rm -f app/android/release.jks app/android/key.properties
+      - uses: actions/upload-artifact@v7
+        with:
+          name: android
+          path: out/*
+          if-no-files-found: error
+
+  linux:
+    needs: test
+    if: (startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch') && (vars.PLATFORMS == '' || contains(vars.PLATFORMS, 'linux'))
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: core/go.mod
+          cache-dependency-path: core/go.sum
+      - name: Build
+        run: bash scripts/build-linux-core.sh
+      - uses: actions/upload-artifact@v7
+        with:
+          name: linux
+          path: dist/firefox-vpn-core-linux-*.tar.gz
+          if-no-files-found: error
+
+  linux-desktop:
+    needs: test
+    if: (startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch') && (vars.PLATFORMS == '' || contains(vars.PLATFORMS, 'linux'))
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-22.04
+          - arch: arm64
+            runner: ubuntu-22.04-arm
+    # The oldest supported runners: the app runs where their glibc and GTK do.
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: core/go.mod
+          cache-dependency-path: core/go.sum
+      - uses: subosito/flutter-action@v2
+        if: matrix.arch == 'amd64'
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      # Flutter publishes SDK archives for x64 Linux only; on ARM it runs
+      # from its Git tag and fetches its ARM engine itself.
+      - name: Flutter (ARM)
+        if: matrix.arch == 'arm64'
+        run: |
+          git clone --depth 1 --branch "$FLUTTER_VERSION" https://github.com/flutter/flutter.git "$HOME/flutter"
+          echo "$HOME/flutter/bin" >> "$GITHUB_PATH"
+          "$HOME/flutter/bin/flutter" --version
+      - name: Build tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq clang cmake ninja-build pkg-config libgtk-3-dev
+      - name: Build
+        run: bash scripts/build-linux.sh
+      - name: Release name
+        run: |
+          mkdir out
+          mv "dist/Firefox-VPN-${{ needs.test.outputs.version }}-Linux-${{ matrix.arch }}.tar.gz" "out/Firefox-VPN-Linux-${{ matrix.arch }}.tar.gz"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: linux-desktop-${{ matrix.arch }}
+          path: out/*
+          if-no-files-found: error
+
+  macos:
+    needs: test
+    if: (startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch') && (vars.PLATFORMS == '' || contains(vars.PLATFORMS, 'macos'))
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: core/go.mod
+          cache-dependency-path: core/go.sum
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - name: Core tests on macOS
+        working-directory: core
+        run: go test ./internal/desktop ./internal/config
+      - name: Build
+        run: bash scripts/build-macos.sh
+      - name: Release name
+        run: |
+          mkdir out
+          mv "dist/Firefox-VPN-${{ needs.test.outputs.version }}-macOS.dmg" out/Firefox-VPN-macOS.dmg
+      - uses: actions/upload-artifact@v7
+        with:
+          name: macos
+          path: out/*
+          if-no-files-found: error
+
+  release:
+    needs: [test, windows, android, linux, linux-desktop, macos]
+    # A platform left out by PLATFORMS is skipped, not failed: the release
+    # goes on with the rest.
+    if: startsWith(github.ref, 'refs/tags/v') && !failure() && !cancelled()
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          path: release
+          merge-multiple: true
+      # A copy of each file with the version after the program's name.
+      - name: Versioned names
+        working-directory: release
+        run: |
+          v="${GITHUB_REF_NAME#v}"
+          for f in *; do
+            case "$f" in
+              Firefox-VPN-*) cp "$f" "Firefox-VPN-$v-${f#Firefox-VPN-}" ;;
+              firefox-vpn-core-*) cp "$f" "firefox-vpn-core-$v-${f#firefox-vpn-core-}" ;;
+            esac
+          done
+          ls
+      - name: Checksums
+        working-directory: release
+        run: sha256sum * > SHA256SUMS.txt && cat SHA256SUMS.txt
+      # The notes are the README's download table only, linking to this
+      # release's files.
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash scripts/release-notes.sh "$GITHUB_REF_NAME" > notes.md
+          gh release create "$GITHUB_REF_NAME" release/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Firefox VPN ${{ needs.test.outputs.version }}" \
+            --notes-file notes.md

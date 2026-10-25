@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>FoxyVPN Pro Desktop v3</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="stylesheet" href="app.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <svg class="icon-sprite" aria-hidden="true">
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6.4 5 5 6.4l5.6 5.6L5 17.6 6.4 19l5.6-5.6 5.6 5.6 1.4-1.4-5.6-5.6L19 6.4 17.6 5 12 10.6z"/></symbol>
+    <symbol id="i-overview" viewBox="0 0 24 24"><path d="M4 13h6V4H4zm0 7h6v-5H4zm10 0h6v-9h-6zm0-16v5h6V4z"/></symbol>
+    <symbol id="i-accounts" viewBox="0 0 24 24"><path d="M16 11a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 16 11zm-8 0A3 3 0 1 0 5 8a3 3 0 0 0 3 3zm0 2c-2.7 0-6 1.3-6 3.5V19h7v-2.2c0-1.3.6-2.4 1.6-3.3A9 9 0 0 0 8 13zm8 0c-3 0-7 1.5-7 4v2h14v-2c0-2.5-4-4-7-4z"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm6.9 6h-3a15.7 15.7 0 0 0-1.3-3.6A8 8 0 0 1 18.9 8zM12 4a14 14 0 0 1 1.9 4h-3.8A14 14 0 0 1 12 4zM4.3 14a8 8 0 0 1 0-4h3.4a16.5 16.5 0 0 0 0 4zm.8 2h3a15.7 15.7 0 0 0 1.3 3.6A8 8 0 0 1 5.1 16zm3-8h-3a8 8 0 0 1 4.3-3.6A15.7 15.7 0 0 0 8.1 8zM12 20a14 14 0 0 1-1.9-4h3.8A14 14 0 0 1 12 20zm2.3-6H9.7a14.7 14.7 0 0 1 0-4h4.6a14.7 14.7 0 0 1 0 4zm.3 5.6a15.7 15.7 0 0 0 1.3-3.6h3a8 8 0 0 1-4.3 3.6zm1.7-5.6a16.5 16.5 0 0 0 0-4h3.4a8 8 0 0 1 0 4z"/></symbol>
+    <symbol id="i-logs" viewBox="0 0 24 24"><path d="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm1 2v12h14V6zm2 2.5 3 2.5-3 2.5zM11 14h6v1.5h-6z"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M19.4 13a7.5 7.5 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3.3h-4l-.4 2.6a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.5 7.5 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1l.4 2.6h4l.4-2.6a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 3.5-3.5 3.5 3.5 0 0 1-3.5 3.5z" transform="translate(-1 0)"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path transform="translate(0 .45)" d="m12 2.5 2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M12 5C6.5 5 2.7 9.4 1.5 12c1.2 2.6 5 7 10.5 7s9.3-4.4 10.5-7C21.3 9.4 17.5 5 12 5zm0 12a5 5 0 1 1 5-5 5 5 0 0 1-5 5zm0-8a3 3 0 1 0 3 3 3 3 0 0 0-3-3z"/></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="m3.3 2 18.7 18.7-1.4 1.4-3.4-3.4A11.5 11.5 0 0 1 12 19C6.5 19 2.7 14.6 1.5 12a13.6 13.6 0 0 1 4.1-5L1.9 3.4zm4.8 7.6A5 5 0 0 0 14.4 16l-1.6-1.6A3 3 0 0 1 9.6 11.2zM12 5c5.5 0 9.3 4.4 10.5 7a13.4 13.4 0 0 1-3 4.1l-3-3A5 5 0 0 0 10 7.6L7.9 5.5A11.6 11.6 0 0 1 12 5z"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm-1-4h2v2h-2zm1-10a4 4 0 0 0-4 4h2a2 2 0 1 1 2 2 1 1 0 0 0-1 1v2h2v-1.1A4 4 0 0 0 12 6z"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 2.5 1.5 21h21zm0 4.2L19 19H5zM11 10v5h2v-5zm0 6.5v2h2v-2z"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 5a1 1 0 0 1 1-1h6l2 2h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1zm2 1v12h14V8h-7.8l-2-2z"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M17.7 6.3A8 8 0 1 0 20 12h-2a6 6 0 1 1-1.8-4.2L13 11h7V4z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><path d="M8 7V4a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1h-3v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1zm2 0h6a1 1 0 0 1 1 1v6h2V5h-9zM6 9v9h9V9z"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="m12 7 6 6-1.4 1.4-4.6-4.6-4.6 4.6L6 13z"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="m12 17-6-6 1.4-1.4 4.6 4.6 4.6-4.6L18 11z"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M9 3h6l1 2h4v2H4V5h4zm-3 6h12l-1 12H7zm4 2v8h1.5v-8zm3.5 0v8H15v-8z"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 15.3A8.5 8.5 0 0 1 8.7 4a8.5 8.5 0 1 0 11.3 11.3z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><path d="M12 7a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm-1-5h2v3h-2zm0 17h2v3h-2zM2 11h3v2H2zm17 0h3v2h-3zM4.2 5.6l1.4-1.4 2.1 2.1-1.4 1.4zm12.1 12.1 1.4-1.4 2.1 2.1-1.4 1.4zM4.2 18.4l2.1-2.1 1.4 1.4-2.1 2.1zM16.3 6.3l2.1-2.1 1.4 1.4-2.1 2.1z"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M10 3H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h6v-2H5V5h5zm6.6 4.4L15.2 8.8 17.4 11H9v2h8.4l-2.2 2.2 1.4 1.4L21.2 12z"/></symbol>
+    <symbol id="i-power" viewBox="0 0 24 24"><path d="M11 2h2v10h-2zm-4.9 3.3 1.4 1.4A7 7 0 1 0 16.5 6.7l1.4-1.4A9 9 0 1 1 6.1 5.3z"/></symbol>
+    <symbol id="i-swap" viewBox="0 0 24 24"><path d="M6.99 11 3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></symbol>
+    <symbol id="i-route" viewBox="0 0 24 24"><path d="M9.78 11.16 8.36 12.58c-.68-.69-1.34-1.58-1.79-2.94l1.94-.49c.32.89.77 1.5 1.27 2.01zM11 6 7 2 3 6h3.02c.02.81.08 1.54.19 2.17l1.94-.49C8.08 7.2 8.03 6.63 8.02 6H11zm10 0-4-4-4 4h2.99c-.1 3.68-1.28 4.75-2.54 5.88-.5.44-1.01.92-1.45 1.55-.34-.49-.73-.88-1.13-1.24L9.46 13.6c.93.85 1.54 1.54 1.54 3.4v5h2v-5c0-2.02.71-2.66 1.79-3.63 1.38-1.24 3.08-2.78 3.2-7.37H21z"/></symbol>
+    <symbol id="i-dns" viewBox="0 0 24 24"><path d="M20 13H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zM7 19c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM20 3H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zM7 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><path d="M17 9V7a5 5 0 0 0-10 0v2H5v12h14V9zm-8-2a3 3 0 0 1 6 0v2H9zm4 9.7V18h-2v-1.3a2 2 0 1 1 2 0z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m9.5 16.2-4.2-4.2-1.4 1.4 5.6 5.6 11-11-1.4-1.4z"/></symbol>
+    <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M12 4a10 10 0 0 0-8.7 15h17.4A10 10 0 0 0 12 4zm0 2a8 8 0 0 1 7.5 11h-15A8 8 0 0 1 12 6zm3.5 2.6-3 4.4a1.6 1.6 0 1 0 1.3.9z"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><path d="M12.65 10A5.99 5.99 0 0 0 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6a5.99 5.99 0 0 0 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></symbol>
+    <symbol id="i-tune" viewBox="0 0 24 24"><path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/></symbol>
+    <symbol id="i-timer" viewBox="0 0 24 24"><path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61 1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42A8.962 8.962 0 0 0 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9a8.994 8.994 0 0 0 7.03-14.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></symbol>
+    <symbol id="i-block" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9A7.902 7.902 0 0 1 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1A7.902 7.902 0 0 1 20 12c0 4.42-3.58 8-8 8z"/></symbol>
+    <symbol id="i-lan" viewBox="0 0 24 24"><path d="M13 22h8v-7h-3v-4h-5V9h3V2H8v7h3v2H6v4H3v7h8v-7H8v-2h8v2h-3z"/></symbol>
+    <symbol id="i-ethernet" viewBox="0 0 24 24"><path d="M7.77 6.76 6.23 5.48.82 12l5.41 6.52 1.54-1.28L3.42 12l4.35-5.24zM7 13h2v-2H7v2zm10-2h-2v2h2v-2zm-6 2h2v-2h-2v2zm6.77-7.52-1.54 1.28L20.58 12l-4.35 5.24 1.54 1.28L23.18 12l-5.41-6.52z"/></symbol>
+    <symbol id="i-computer" viewBox="0 0 24 24"><path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M14.4 6 14 4H5v17h2v-7h5.6l.4 2h7V6z"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></symbol>
+    <symbol id="i-percent" viewBox="0 0 24 24"><path d="M7.5 11C9.43 11 11 9.43 11 7.5S9.43 4 7.5 4 4 5.57 4 7.5 5.57 11 7.5 11zm0-5C8.33 6 9 6.67 9 7.5S8.33 9 7.5 9 6 8.33 6 7.5 6.67 6 7.5 6zM4.0025 18.5832 18.59 3.9955l1.4142 1.4142L5.4167 19.9974zM16.5 13c-1.93 0-3.5 1.57-3.5 3.5s1.57 3.5 3.5 3.5 3.5-1.57 3.5-3.5-1.57-3.5-3.5-3.5zm0 5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></symbol>
+    <symbol id="i-server" viewBox="0 0 24 24"><path d="M2 20h20v-4H2v4zm2-3h2v2H4v-2zM2 4v4h20V4H2zm4 3H4V5h2v2zm-4 7h20v-4H2v4zm2-3h2v2H4v-2z"/></symbol>
+  </svg>
+
+  <div id="login-view" class="login-view" hidden>
+    <form id="login-form" class="login-card">
+      <div class="brand-mark big" aria-hidden="true"></div>
+      <h1>Firefox VPN</h1>
+      <p class="muted">Sign in to the proxy console.</p>
+      <label class="field"><span>Username</span><input name="username" autocomplete="username" required></label>
+      <label class="field"><span>Password</span><input name="password" type="password" autocomplete="current-password" required data-reveal></label>
+      <p class="form-error" id="login-error"></p>
+      <button type="submit" class="btn primary block">Sign in</button>
+    </form>
+  </div>
+
+  <div id="app" class="shell" hidden>
+    <!-- Narrow screens: the bar with the menu button; the sidebar is then a
+         drawer (setNavOpen). -->
+    <header class="mobile-bar">
+      <button id="nav-toggle" class="btn icon" aria-label="Open the menu" aria-controls="sidebar" aria-expanded="false"><svg><use href="#i-menu"/></svg></button>
+      <div class="brand-mark" aria-hidden="true"></div>
+      <span class="brand-name">Firefox VPN</span>
+      <!-- The theme switch and Sign out, moved here on narrow screens
+           (placeHeadButtons). -->
+      <div class="bar-actions" id="bar-actions"></div>
+    </header>
+    <div class="nav-backdrop" id="nav-backdrop"></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true" style="background: linear-gradient(135deg, #00d2ff, #7c5bff);">🦊</div>
+        <div>
+          <div class="brand-name">FoxyVPN Pro</div>
+          <div class="brand-sub">Desktop v3 with TUN</div>
+        </div>
+        <button id="nav-close" class="btn icon nav-close" aria-label="Close the menu"><svg><use href="#i-close"/></svg></button>
+      </div>
+      <nav class="nav" role="tablist">
+        <button class="nav-item active" data-view="overview"><svg><use href="#i-overview"/></svg><span>Overview</span></button>
+        <button class="nav-item" data-view="locations"><svg><use href="#i-globe"/></svg><span>Servers</span></button>
+        <button class="nav-item" data-view="accounts"><svg><use href="#i-accounts"/></svg><span>Accounts</span><b class="nav-badge" id="nav-accounts-badge" hidden></b></button>
+        <button class="nav-item" data-view="logs"><svg><use href="#i-logs"/></svg><span>Logs</span></button>
+        <button class="nav-item" data-view="settings"><svg><use href="#i-settings"/></svg><span>Settings</span></button>
+        <button class="nav-item" data-view="about"><svg><use href="#i-star"/></svg><span>About / درباره</span></button>
+        <button class="nav-item" data-view="help"><svg><use href="#i-help"/></svg><span>Help</span></button>
+      </nav>
+      <div class="sidebar-foot">
+        <div class="mini-status" id="mini-status">
+          <span class="mini-flag" id="mini-flag"><span class="dot"></span></span>
+          <div>
+            <div class="mini-title" id="mini-title">…</div>
+            <div class="mini-sub" id="mini-sub"></div>
+          </div>
+        </div>
+        <div class="version-tag" id="version-tag" title="Program version"></div>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="page-head">
+        <div>
+          <h1 id="page-title">Overview</h1>
+          <p class="muted" id="page-sub" hidden></p>
+        </div>
+        <div class="head-actions" id="head-actions">
+          <span id="state-pill" class="pill">…</span>
+          <span class="head-sep" aria-hidden="true"></span>
+          <button id="theme-toggle" class="btn icon" title="Switch between dark and light" aria-label="Switch between dark and light"><svg><use href="#i-moon"/></svg></button>
+          <button id="logout" class="btn icon" title="Sign out" aria-label="Sign out" hidden><svg><use href="#i-logout"/></svg></button>
+        </div>
+      </header>
+
+      <div id="banner" class="banner" hidden></div>
+
+      <main>
+        <!-- ======================================================= overview -->
+        <section id="view-overview" class="view">
+          <!-- MASTER VPN CARD -->
+          <article class="hero card master-vpn-card" style="padding: 24px; border-radius: 20px; border: 1px solid var(--border); background: radial-gradient(1100px 500px at 50% 0%, rgba(0, 210, 255, 0.12), transparent 70%), var(--surface); box-shadow: 0 10px 30px rgba(0,0,0,0.25); margin-bottom: 20px;">
+            
+            <!-- Top Row: Server Switcher & Mode Badges -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 14px;">
+              <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                <span class="muted small" style="text-transform:uppercase; letter-spacing:0.06em; font-weight:700;">Location:</span>
+                <div class="server-picker-pill" id="hero-server-pill" id="hero-server-pill" style="display:inline-flex; align-items:center; gap:8px; background:var(--surface-2); border:1px solid var(--border); padding:6px 14px; border-radius:30px; cursor:pointer; transition:all 0.2s;" title="Click to view all servers">
+                  <span id="hero-quick-flag"></span>
+                  <span id="hero-quick-location" style="font-weight:600; font-size:0.92rem;">Auto (Recommended)</span>
+                  <svg style="width:14px; height:14px; fill:var(--muted);"><use href="#i-down"/></svg>
+                </div>
+                <select id="hero-quick-select" style="background:var(--surface-2); border:1px solid var(--border); color:var(--text); border-radius:20px; padding:5px 12px; font-size:0.86rem; cursor:pointer; outline:none; max-width:220px;" title="Quick switch server">
+                  <option value="">Auto (Recommended)</option>
+                  <option value="fastest">⚡ Auto (Fastest)</option>
+                </select>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span id="transport-badge" class="badge" style="background:rgba(0,210,255,0.15); color:#00d2ff; padding:4px 10px; border-radius:8px; font-size:0.8rem; font-weight:600;">HTTP/2 · TLS</span>
+                <span id="tun-status-pill" class="badge" style="background:rgba(255,255,255,0.08); color:var(--muted); padding:4px 10px; border-radius:8px; font-size:0.8rem; font-weight:600;">TUN: Inactive</span>
+              </div>
+            </div>
+
+            <!-- Center: Big Circular Power Button -->
+            <div style="display:flex; flex-direction:column; align-items:center; margin: 8px 0 18px;">
+              <button id="master-connect-btn" class="power-circle-btn state-off" style="width:140px; height:140px; border-radius:50%; border:3px solid rgba(0,210,255,0.3); background:radial-gradient(circle at 35% 30%, rgba(0,210,255,0.15), rgba(0,0,0,0.5)), var(--surface-2); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; cursor:pointer; transition:all 0.3s ease; box-shadow:0 0 25px rgba(0,210,255,0.15); color:#fff;">
+                <svg id="master-btn-icon" style="width:44px; height:44px; fill:#00d2ff; transition:all 0.3s;"><use href="#i-power"/></svg>
+                <span id="master-btn-label" style="font-size:0.88rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;">CONNECT</span>
+              </button>
+              
+              <div style="margin-top:14px; text-align:center;">
+                <h2 id="master-status-text" style="font-size:1.3rem; font-weight:700; margin:0; display:flex; align-items:center; justify-content:center; gap:10px;">
+                  <span id="master-status-pulse" class="dot" style="width:12px; height:12px; border-radius:50%; background:#8a92a6; display:inline-block;"></span>
+                  <span id="master-status-title">Disconnected</span>
+                </h2>
+                <p id="master-status-sub" class="muted small" style="margin-top:6px; max-width:480px;">
+                  برای اتصال فیلترشکن و شروع تونل، دکمه CONNECT را بزنید.
+                </p>
+                <div class="chips" id="hero-chips" style="margin-top:10px; justify-content:center;"></div>
+              </div>
+            </div>
+
+            <!-- Hidden compatibility elements to prevent any null reference errors -->
+            <div style="display:none;" aria-hidden="true">
+              <button id="power"><span>Turn on</span></button>
+              <span id="hero-pulse"></span>
+              <span id="hero-eyebrow"></span>
+              <span id="hero-title"></span>
+              <span id="hero-flag"></span>
+              <span id="hero-message"></span>
+              <div id="notices" hidden></div>
+            </div>
+
+            <!-- Bottom: Mode Switches & Quick Actions -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; border-top:1px solid rgba(255,255,255,0.06); padding-top:16px;">
+              <div style="display:flex; gap:14px; flex-wrap:wrap;">
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.88rem; background:rgba(0,0,0,0.25); padding:8px 14px; border-radius:10px; border:1px solid var(--border);">
+                  <input type="checkbox" id="chk-tun-enabled" checked style="cursor:pointer; accent-color:#00d2ff; width:16px; height:16px;">
+                  <span><b>TUN Mode</b> (کل ترافیک سیستم)</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.88rem; background:rgba(0,0,0,0.25); padding:8px 14px; border-radius:10px; border:1px solid var(--border);">
+                  <input type="checkbox" id="chk-sysproxy-enabled" style="cursor:pointer; accent-color:#7c5bff; width:16px; height:16px;">
+                  <span><b>System Proxy</b> (پروکسی ویندوز)</span>
+                </label>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <button id="run-test" class="btn sm"><svg style="width:14px; height:14px;"><use href="#i-bolt"/></svg><span>Test Speed</span></button>
+                <button id="restart-proxy" class="btn sm"><svg style="width:14px; height:14px;"><use href="#i-refresh"/></svg><span>Restart</span></button>
+              </div>
+            </div>
+
+          </article>
+
+          <div class="kpis">
+            <article class="kpi card" id="kpi-account">
+              <div class="kpi-label">Active account</div>
+              <div class="kpi-body">
+                <svg class="gauge" viewBox="0 0 42 42" aria-hidden="true">
+                  <circle class="gauge-track" cx="21" cy="21" r="17"></circle>
+                  <circle class="gauge-fill" id="gauge-fill" cx="21" cy="21" r="17" stroke-dasharray="0 107"></circle>
+                </svg>
+                <div>
+                  <div class="kpi-value" id="kpi-usage">–</div>
+                  <div class="kpi-sub" id="kpi-usage-sub"></div>
+                </div>
+              </div>
+            </article>
+            <article class="kpi card">
+              <div class="kpi-label">Latency</div>
+              <div class="kpi-value" id="kpi-latency">–</div>
+              <div class="kpi-sub" id="kpi-latency-sub">Run a connection test</div>
+            </article>
+            <article class="kpi card">
+              <div class="kpi-label">Speed</div>
+              <div class="kpi-value speed"><span class="speed-down" id="kpi-down">–</span></div>
+              <div class="kpi-sub" id="kpi-speed-sub"></div>
+            </article>
+            <article class="kpi card">
+              <div class="kpi-label" id="kpi-uptime-label">Uptime</div>
+              <div class="kpi-value" id="kpi-uptime">–</div>
+              <div class="kpi-sub" id="kpi-uptime-sub"></div>
+            </article>
+          </div>
+
+          <div class="grid-2">
+            <article class="card">
+              <div class="card-head"><h3>Active account</h3><a class="link" href="#accounts">Manage</a></div>
+              <div id="active-account"></div>
+            </article>
+            <article class="card">
+              <div class="card-head"><h3>Connection test</h3><span class="muted small" id="test-when"></span></div>
+              <div id="test-result" class="test-result"><p class="muted">Sends an HTTPS request through the tunnel and times each stage.</p></div>
+            </article>
+          </div>
+
+          <div class="grid-2">
+            <article class="card">
+              <div class="card-head"><h3>Proxy</h3></div>
+              <dl class="facts" id="proxy-facts"></dl>
+            </article>
+            <article class="card">
+              <div class="card-head"><h3>Recent activity</h3><a class="link" href="#logs">All logs</a></div>
+              <div class="mini-log" id="recent-log"></div>
+            </article>
+          </div>
+        </section>
+
+        <!-- ======================================================= accounts -->
+        <section id="view-accounts" class="view" hidden>
+          <div class="toolbar-row">
+            <p class="muted" id="accounts-hint"></p>
+            <button id="add-account" class="btn primary"><svg><use href="#i-plus"/></svg><span>Add account</span></button>
+          </div>
+          <div id="account-list" class="account-list"></div>
+        </section>
+
+        <!-- ====================================================== locations -->
+        <section id="view-locations" class="view" hidden>
+          <div class="banner info" style="margin-bottom: 14px; display:flex; align-items:center; gap:12px; background:rgba(0,210,255,0.08); border:1px solid rgba(0,210,255,0.25); border-radius:12px; padding:12px 18px;" dir="rtl">
+            <span style="font-size:22px;">💡</span>
+            <span style="font-size:0.92rem; line-height:1.6;"><b>راهنما:</b> برای تغییر یا اتصال به هر سرور، کافیست روی <b>هر کجای ردیف آن در جدول زیر</b> کلیک کنید یا دکمه «اتصال / Use» را بزنید.</span>
+          </div>
+          <article class="card mode-card">
+            <div>
+              <div class="eyebrow">Server selection</div>
+              <h3 id="mode-title">…</h3>
+              <p class="muted small" id="mode-sub"></p>
+            </div>
+            <div class="mode-actions">
+              <button class="btn" id="mode-recommended">Auto (recommended)</button>
+              <button class="btn" id="mode-fastest"><svg><use href="#i-bolt"/></svg><span>Auto (fastest)</span></button>
+            </div>
+          </article>
+
+          <div class="toolbar-row">
+            <div class="toolbar">
+              <div class="segmented" role="group" aria-label="Sort">
+                <button class="seg active" data-sort="latency">Real delay</button>
+                <button class="seg" data-sort="name">Name</button>
+              </div>
+              <input id="location-search" type="search" placeholder="Search servers">
+            </div>
+            <button id="measure" class="btn primary"><svg><use href="#i-gauge"/></svg><span>Test real delay</span></button>
+          </div>
+          <p class="muted small" id="ping-note"></p>
+          <p class="muted small" id="serverlist-note"></p>
+          <div class="table-card card">
+            <table class="table" id="location-table">
+              <thead><tr><th>Server</th><th class="hide-sm">Address</th><th>Real delay</th><th></th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- =========================================================== logs -->
+        <section id="view-logs" class="view" hidden>
+          <div class="toolbar-row">
+            <div class="toolbar">
+              <select id="log-level">
+                <option value="DEBUG">All levels</option>
+                <option value="INFO" selected>Info and above</option>
+                <option value="WARN">Warnings and errors</option>
+                <option value="ERROR">Errors only</option>
+              </select>
+              <input id="log-search" type="search" placeholder="Filter text">
+              <label class="switch"><input type="checkbox" id="log-follow" checked><span></span>Follow</label>
+            </div>
+            <button id="log-clear" class="btn">Clear view</button>
+          </div>
+          <div id="log-list" class="terminal" role="log" aria-live="polite"></div>
+        </section>
+
+        <!-- ======================================================= settings -->
+        <section id="view-settings" class="view" hidden>
+          <form id="settings-form" class="settings">
+            <nav class="settings-nav">
+              <a href="#set-dashboard"><svg><use href="#i-overview"/></svg><span>Dashboard</span></a>
+              <a href="#set-connection"><svg><use href="#i-globe"/></svg><span>Connection</span></a>
+              <a href="#set-local"><svg><use href="#i-ethernet"/></svg><span>Local proxy</span></a>
+              <a href="#set-dns"><svg><use href="#i-dns"/></svg><span>DNS</span></a>
+              <a href="#set-routing"><svg><use href="#i-route"/></svg><span>Routing</span></a>
+              <a href="#set-accounts"><svg><use href="#i-accounts"/></svg><span>Accounts</span></a>
+              <a href="#set-advanced"><svg><use href="#i-tune"/></svg><span>Advanced</span></a>
+            </nav>
+            <div class="settings-body">
+              <!-- Each setting is a row: an icon, its name with a short hint,
+                   and its control at the end (under the text on a narrow
+                   screen, and for lists). -->
+              <fieldset class="card" id="set-dashboard">
+                <legend><svg><use href="#i-overview"/></svg>Dashboard</legend>
+                <div class="set-list">
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-lan"/></svg></span>
+                    <span class="set-text"><label for="dash-host">Access</label><small>All networks: open it from other devices; set a login</small></span>
+                    <span class="set-ctl">
+                      <select id="dash-host" data-listen="dashboard">
+                        <option value="127.0.0.1">This device only (127.0.0.1)</option>
+                        <option value="0.0.0.0">All networks (0.0.0.0)</option>
+                      </select>
+                    </span>
+                  </div>
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-ethernet"/></svg></span>
+                    <span class="set-text"><label for="dash-port">Port</label></span>
+                    <span class="set-ctl"><input id="dash-port" class="port" type="number" min="1" max="65535" required></span>
+                  </div>
+                  <div class="set-row stack">
+                    <span class="set-ic"><svg><use href="#i-key"/></svg></span>
+                    <span class="set-text"><span class="set-title">Login</span><small class="points"><span>A username and a password (at least 6 characters) require a login</span><span>An empty username removes the login</span><span>An empty password keeps the current one</span></small></span>
+                    <span class="set-ctl pair">
+                      <input name="dashboard.username" autocomplete="off" placeholder="Username" aria-label="Dashboard username">
+                      <input name="dashboard_password" class="secret" autocomplete="off" spellcheck="false" autocapitalize="off" placeholder="New password" aria-label="New dashboard password" data-reveal data-1p-ignore data-lpignore="true" data-bwignore>
+                    </span>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="card" id="set-connection">
+                <legend><svg><use href="#i-globe"/></svg>Connection</legend>
+                <p class="set-intro">How this program reaches Mozilla, and where the traffic leaves from.</p>
+                <div class="set-list">
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-pin"/></svg></span>
+                    <span class="set-text"><label for="location-select">Location</label><small class="points"><span>Auto: Mozilla's recommended location</span><span>Fastest: the lowest delay, chosen at each start</span></small></span>
+                    <span class="set-ctl"><select name="location" id="location-select"></select></span>
+                  </div>
+                  <div class="set-row" id="server-field" hidden>
+                    <span class="set-ic"><svg><use href="#i-server"/></svg></span>
+                    <span class="set-text"><label for="f-server">Server address</label><small>host:port of a Mozilla proxy server</small></span>
+                    <span class="set-ctl"><input id="f-server" name="proxy.server" spellcheck="false" placeholder="host:443"></span>
+                  </div>
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-bolt"/></svg></span>
+                    <span class="set-text"><span class="set-title">Protocol</span><small>HTTP/3 falls back to HTTP/2 where QUIC is blocked</small></span>
+                    <span class="set-ctl">
+                      <span class="segs" role="radiogroup" aria-label="Protocol">
+                        <label><input type="radio" name="proxy.transport" value="h2"><span>HTTP/2</span></label>
+                        <label><input type="radio" name="proxy.transport" value="h3"><span>HTTP/3</span></label>
+                      </span>
+                    </span>
+                  </div>
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-moon"/></svg></span>
+                    <span class="set-text"><label for="f-sleep">Pause when unused</label><small class="points"><span>No traffic for this long: the connection to Mozilla closes and the account rests</span><span>The next connection wakes it in a few seconds</span></small></span>
+                    <span class="set-ctl">
+                      <select id="f-sleep" name="proxy.idle_sleep">
+                        <option value="0s">Never</option>
+                        <option value="5m0s">After 5 minutes</option>
+                        <option value="15m0s">After 15 minutes</option>
+                        <option value="30m0s">After 30 minutes</option>
+                        <option value="1h0m0s">After 1 hour</option>
+                      </select>
+                    </span>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="card" id="set-local">
+                <legend><svg><use href="#i-ethernet"/></svg>Local proxy</legend>
+                <p class="set-intro">Where applications connect: one port for SOCKS5 and HTTP.</p>
+                <div class="set-list">
+                  <div class="set-row" id="system-proxy-row" hidden>
+                    <span class="set-ic"><svg><use href="#i-computer"/></svg></span>
+                    <span class="set-text"><span class="set-title">Mode</span><small>System proxy: Windows and most applications go through the VPN</small></span>
+                    <span class="set-ctl">
+                      <span class="segs" role="radiogroup" aria-label="Mode">
+                        <label><input type="radio" name="system_proxy.mode" value="clear"><span>Proxy only</span></label>
+                        <label><input type="radio" name="system_proxy.mode" value="set"><span>System proxy</span></label>
+                      </span>
+                    </span>
+                  </div>
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-lan"/></svg></span>
+                    <span class="set-text"><label for="proxy-host">Access</label><small>All networks: other devices, or a VPS's clients, can use it too</small></span>
+                    <span class="set-ctl">
+                      <select id="proxy-host" data-listen="proxy">
+                        <option value="127.0.0.1">This device only (127.0.0.1)</option>
+                        <option value="0.0.0.0">All networks (0.0.0.0)</option>
+                      </select>
+                    </span>
+                  </div>
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-ethernet"/></svg></span>
+                    <span class="set-text"><label for="proxy-port">Port</label></span>
+                    <span class="set-ctl"><input id="proxy-port" class="port" type="number" min="1" max="65535" required></span>
+                  </div>
+                  <div class="set-row stack">
+                    <span class="set-ic"><svg><use href="#i-key"/></svg></span>
+                    <span class="set-text"><span class="set-title">Login</span><small class="points"><span>Optional: set both, or neither</span><span>Open to the network without one, anyone who finds the port can use it</span></small></span>
+                    <span class="set-ctl pair">
+                      <input name="proxy.username" autocomplete="off" placeholder="Username" aria-label="Proxy username">
+                      <input name="proxy.password" class="secret" autocomplete="off" spellcheck="false" autocapitalize="off" placeholder="Password" aria-label="Proxy password" data-reveal data-1p-ignore data-lpignore="true" data-bwignore>
+                    </span>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="card" id="set-dns">
+                <legend><svg><use href="#i-dns"/></svg>DNS</legend>
+                <p class="set-intro">How this program finds Mozilla's servers. Sites opened through the VPN are looked up by Mozilla's exit, never here.</p>
+                <div class="set-list">
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-dns"/></svg></span>
+                    <span class="set-text"><label for="dns-preset">Servers</label><small>Encrypted DNS avoids wrong answers on filtered networks</small></span>
+                    <span class="set-ctl">
+                      <select id="dns-preset">
+                        <option value="auto">Automatic (Cloudflare, Google, Quad9)</option>
+                        <option value="system">System DNS</option>
+                        <option value="cloudflare">Cloudflare, HTTPS (1.1.1.1)</option>
+                        <option value="google">Google, HTTPS (8.8.8.8)</option>
+                        <option value="quad9">Quad9, HTTPS (9.9.9.9)</option>
+                        <option value="cloudflare_dot">Cloudflare, TLS (1.1.1.1:853)</option>
+                        <option value="custom">Custom…</option>
+                      </select>
+                    </span>
+                  </div>
+                  <div class="set-row stack" id="dns-custom-field" hidden>
+                    <span class="set-ic"><svg><use href="#i-link"/></svg></span>
+                    <span class="set-text"><label for="dns-custom">Custom servers</label><small>One per line: https://host/dns-query, tls://host, or an IP address</small></span>
+                    <span class="set-ctl"><textarea id="dns-custom" rows="3" spellcheck="false" placeholder="https://1.1.1.1/dns-query&#10;tls://9.9.9.9&#10;8.8.8.8"></textarea></span>
+                  </div>
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-refresh"/></svg></span>
+                    <span class="set-text"><label for="f-dns-fallback">Fall back to the system DNS</label><small>When these servers do not answer</small></span>
+                    <span class="set-ctl"><label class="switch"><input type="checkbox" id="f-dns-fallback" name="dns.fallback_to_system"><span></span></label></span>
+                  </div>
+                  <div class="set-row stack">
+                    <span class="set-ic"><svg><use href="#i-gauge"/></svg></span>
+                    <span class="set-text"><span class="set-title">Test</span><small class="points"><span>Looks up Mozilla's addresses with the servers above and with the system DNS</span><span>Filtered: the network tampers with DNS</span></small></span>
+                    <span class="set-ctl start"><button type="button" class="btn" id="dns-test"><svg><use href="#i-gauge"/></svg><span>Test DNS</span></button></span>
+                  </div>
+                </div>
+                <div id="dns-test-result"></div>
+              </fieldset>
+
+              <fieldset class="card" id="set-routing">
+                <legend><svg><use href="#i-route"/></svg>Routing</legend>
+                <p class="set-intro">Sends chosen sites straight through your own internet instead of Mozilla: they open faster and use no quota.</p>
+                <div class="set-list">
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-flag"/></svg></span>
+                    <span class="set-text"><label for="f-region">Country</label><small>Its sites and addresses go directly</small></span>
+                    <span class="set-ctl">
+                      <select id="f-region" name="routing.region">
+                        <option value="ir">Iran</option>
+                        <option value="cn">China</option>
+                        <option value="ru">Russia</option>
+                        <option value="af">Afghanistan</option>
+                        <option value="tr">Turkey</option>
+                        <option value="id">Indonesia</option>
+                        <option value="br">Brazil</option>
+                        <option value="">None (only private networks)</option>
+                      </select>
+                    </span>
+                  </div>
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-route"/></svg></span>
+                    <span class="set-text"><label for="f-routing">Use routing</label><small id="routing-state" class="route-state"></small></span>
+                    <span class="set-ctl"><label class="switch"><input type="checkbox" id="f-routing" name="routing.enabled"><span></span></label></span>
+                  </div>
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-block"/></svg></span>
+                    <span class="set-text"><label for="routing-ads">Block ads</label><small>Adds geosite:category-ads-all to the Block list</small></span>
+                    <span class="set-ctl"><label class="switch"><input type="checkbox" id="routing-ads"><span></span></label></span>
+                  </div>
+                </div>
+
+                <h4 class="set-sub">Rules</h4>
+                <div class="set-list">
+                  <div class="set-row stack">
+                    <span class="set-ic"><svg><use href="#i-check"/></svg></span>
+                    <span class="set-text"><label for="routing-direct">Direct</label><small class="points"><span>Sites and addresses in this list open without the VPN</span><span>The chosen country's rules are already here: add, change, or remove lines</span><span>Choosing another country replaces them</span></small></span>
+                    <span class="set-ctl col">
+                      <textarea id="routing-direct" rows="6" spellcheck="false" placeholder="domain:example.com&#10;192.0.2.0/24"></textarea>
+                      <button type="button" class="btn sm ghost" id="routing-restore"><svg><use href="#i-refresh"/></svg><span>Restore the country's rules</span></button>
+                    </span>
+                  </div>
+                  <div class="set-row stack">
+                    <span class="set-ic"><svg><use href="#i-block"/></svg></span>
+                    <span class="set-text"><label for="routing-block">Block</label><small>Sites and addresses in this list do not open at all, neither directly nor through the VPN</small></span>
+                    <span class="set-ctl"><textarea id="routing-block" rows="3" spellcheck="false" placeholder="domain:example.com"></textarea></span>
+                  </div>
+                  <details class="set-syntax">
+                    <summary>How to write a rule</summary>
+                    <dl>
+                      <dt><code>domain:example.com</code></dt><dd>The site and its subdomains</dd>
+                      <dt><code>full:www.example.com</code></dt><dd>Exactly this name</dd>
+                      <dt><code>keyword:bank</code></dt><dd>Names that contain the word</dd>
+                      <dt><code>regexp:\.ir$</code></dt><dd>Names that match the expression</dd>
+                      <dt><code>geosite:ir</code></dt><dd>Sites of a tag in the geo files</dd>
+                      <dt><code>geoip:ir</code></dt><dd>Addresses of a country in the geo files</dd>
+                      <dt><code>ext:iran.dat:ir</code></dt><dd>A tag in another geo file</dd>
+                      <dt><code>1.2.3.4</code> <code>10.0.0.0/8</code></dt><dd>An address or a network</dd>
+                    </dl>
+                  </details>
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-search"/></svg></span>
+                    <span class="set-text"><label for="f-resolve">Look up names for IP rules</label><small>Applies the IP rules to sites no name rule matched (an encrypted lookup through Mozilla)</small></span>
+                    <span class="set-ctl"><label class="switch"><input type="checkbox" id="f-resolve" name="routing.resolve_domains"><span></span></label></span>
+                  </div>
+                </div>
+
+                <h4 class="set-sub">Geo files</h4>
+                <div class="set-list">
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-globe"/></svg></span>
+                    <span class="set-text"><label for="routing-source">Source</label><small>Both cover every country</small></span>
+                    <span class="set-ctl"><select id="routing-source"><option value="">By hand (the URLs below)</option></select></span>
+                  </div>
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-timer"/></svg></span>
+                    <span class="set-text"><label for="routing-days">Update every</label></span>
+                    <span class="set-ctl"><span class="suffix"><input id="routing-days" type="number" min="1" max="365"><i>days</i></span></span>
+                  </div>
+                  <details class="set-more">
+                    <summary>File URLs</summary>
+                    <div class="set-list">
+                      <div class="set-row stack">
+                        <span class="set-ic"><svg><use href="#i-link"/></svg></span>
+                        <span class="set-text"><label for="f-geosite">Sites (geosite.dat)</label></span>
+                        <span class="set-ctl"><input id="f-geosite" name="routing.geosite_url" spellcheck="false"></span>
+                      </div>
+                      <div class="set-row stack">
+                        <span class="set-ic"><svg><use href="#i-link"/></svg></span>
+                        <span class="set-text"><label for="f-geoip">Addresses (geoip.dat)</label></span>
+                        <span class="set-ctl"><input id="f-geoip" name="routing.geoip_url" spellcheck="false"></span>
+                      </div>
+                    </div>
+                  </details>
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-refresh"/></svg></span>
+                    <span class="set-text"><span class="set-title">Files</span><small id="routing-files"></small></span>
+                    <span class="set-ctl"><button type="button" class="btn" id="routing-update"><svg><use href="#i-refresh"/></svg><span>Update now</span></button></span>
+                  </div>
+                </div>
+
+                <h4 class="set-sub">Test a destination</h4>
+                <div class="route-test">
+                  <span class="route-test-row"><input id="route-target" spellcheck="false" placeholder="digikala.com" aria-label="Destination"><button type="button" class="btn" id="route-test"><svg><use href="#i-gauge"/></svg><span>Test</span></button></span>
+                  <small class="muted">A name, an address, or a URL: where it goes and which rule decides, with the saved rules</small>
+                  <div id="route-test-result"></div>
+                </div>
+              </fieldset>
+
+              <fieldset class="card" id="set-accounts">
+                <legend><svg><use href="#i-accounts"/></svg>Accounts</legend>
+                <div class="set-list">
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-percent"/></svg></span>
+                    <span class="set-text"><label for="f-threshold">Switch accounts at</label><small>The next account takes over when the active one has used this share of its data, without dropping connections</small></span>
+                    <span class="set-ctl"><span class="suffix"><input id="f-threshold" name="accounts.switch_threshold_percent" type="number" min="1" max="100" step="1"><i>%</i></span></span>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="card" id="set-advanced">
+                <legend><svg><use href="#i-tune"/></svg>Advanced</legend>
+                <p class="set-intro">The defaults suit almost everyone.</p>
+                <div class="set-list">
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-logs"/></svg></span>
+                    <span class="set-text"><label for="f-verbose">Log destinations</label><small>Writes every site opened to the log (privacy sensitive)</small></span>
+                    <span class="set-ctl"><label class="switch"><input type="checkbox" id="f-verbose" name="logging.verbose"><span></span></label></span>
+                  </div>
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-server"/></svg></span>
+                    <span class="set-text"><label for="f-upstream">Connections to Mozilla</label><small>Each device stays on one connection, so more only helps when several devices share the proxy</small></span>
+                    <span class="set-ctl">
+                      <select id="f-upstream" name="proxy.upstream_connections" data-int>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="4">4</option>
+                        <option value="8">8</option>
+                      </select>
+                    </span>
+                  </div>
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-accounts"/></svg></span>
+                    <span class="set-text"><label for="f-max">Most connections at once</label><small>From applications to this proxy; 0 = no limit</small></span>
+                    <span class="set-ctl"><input id="f-max" class="port" name="proxy.max_connections" type="number" min="0" data-int></span>
+                  </div>
+                  <div class="set-row">
+                    <span class="set-ic"><svg><use href="#i-swap"/></svg></span>
+                    <span class="set-text"><label for="f-relay">Relay for Mozilla's services</label><small>Only if your network blocks signing in to Mozilla: the address of a relay you set up yourself</small></span>
+                    <span class="set-ctl"><input id="f-relay" name="network.api_relay" spellcheck="false" placeholder="https://relay.NAME.workers.dev/?key=…"></span>
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="folders" id="data-dir"></div>
+            </div>
+            <div class="save-bar" id="save-bar">
+              <span class="save-note">Unsaved changes</span>
+              <span class="form-error" id="settings-error"></span>
+              <button type="button" class="btn ghost" id="settings-discard">Discard</button>
+              <button type="submit" class="btn primary">Save</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- ========================================================== about -->
+        <section id="view-about" class="view" hidden dir="rtl">
+          <article class="card hero-about" style="background: radial-gradient(ellipse at top right, rgba(124, 91, 255, 0.15), transparent 70%), var(--surface); padding: 26px; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 20px;">
+            <div style="display:flex; align-items:center; gap:16px; margin-bottom:18px;">
+              <div class="brand-mark big" style="width:56px; height:56px; background:linear-gradient(135deg, #00d2ff, #7c5bff); border-radius:16px; display:grid; place-items:center; color:#fff; font-size:28px; box-shadow:0 8px 22px rgba(0,210,255,0.35);">🦊</div>
+              <div>
+                <h2 style="font-size:1.6rem; margin:0; font-weight:800; letter-spacing:-0.02em;">FoxyVPN Pro Desktop v3</h2>
+                <p class="muted" style="margin-top:4px; font-size:0.95rem; font-weight:500;">کلاینت پیشرفته دسکتاپ برای پروتکل امن و پرسرعت Firefox VPN با پشتیبانی کامل از TUN Mode لایه ۳</p>
+              </div>
+            </div>
+            <p style="line-height:1.8; font-size:1rem; margin-bottom:20px; color:var(--text);">
+              نرم‌افزار <b>FoxyVPN Desktop v3</b> یک راهکار قدرتمند، امن و مدرن برای عبور پایدار از محدودیت‌های اینترنت با بهره‌گیری از زیرساخت ابری موزیلا و شبکه توزیع Anycast در شرکت Fastly است. در این نسخه اختصاصی، قابلیت <b>Wintun L3 TUN Mode</b> پیاده‌سازی شده است تا بتوانید بدون نیاز به افزونه یا تنظیم پروکسی، کل سیستم‌عامل ویندوز (شامل تمامی برنامه‌ها، مرورگرها، بازی‌ها و ترمینال) را به شکلی ایمن، تفکیک‌شده و بدون لوپ ترافیک تونل نمایید.
+            </p>
+            
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin-top:24px;">
+              <a href="https://t.me/MyLeitner" target="_blank" class="card" style="display:flex; align-items:center; gap:16px; text-decoration:none; padding:18px; border:1px solid var(--border); border-radius:14px; transition:all 0.25s; background:var(--surface-2);" onmouseover="this.style.borderColor='#00d2ff'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 20px rgba(0,210,255,0.15)'" onmouseout="this.style.borderColor='var(--border)'; this.style.transform='none'; this.style.boxShadow='none'">
+                <span style="font-size:32px;">📢</span>
+                <div>
+                  <div style="font-weight:700; color:var(--text); font-size:1.05rem;">کانال تلگرام رسمی</div>
+                  <div class="muted small" style="color:#00d2ff; font-weight:600; direction:ltr; text-align:right;">t.me/MyLeitner</div>
+                </div>
+              </a>
+              <a href="https://t.me/mohsenniksirat" target="_blank" class="card" style="display:flex; align-items:center; gap:16px; text-decoration:none; padding:18px; border:1px solid var(--border); border-radius:14px; transition:all 0.25s; background:var(--surface-2);" onmouseover="this.style.borderColor='#7c5bff'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 20px rgba(124,91,255,0.15)'" onmouseout="this.style.borderColor='var(--border)'; this.style.transform='none'; this.style.boxShadow='none'">
+                <span style="font-size:32px;">✉️</span>
+                <div>
+                  <div style="font-weight:700; color:var(--text); font-size:1.05rem;">ارتباط مستقیم با توسعه‌دهنده</div>
+                  <div class="muted small" style="color:#7c5bff; font-weight:600; direction:ltr; text-align:right;">t.me/mohsenniksirat</div>
+                </div>
+              </a>
+              <a href="https://github.com/mohsen-niksirat" target="_blank" class="card" style="display:flex; align-items:center; gap:16px; text-decoration:none; padding:18px; border:1px solid var(--border); border-radius:14px; transition:all 0.25s; background:var(--surface-2);" onmouseover="this.style.borderColor='#10b981'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 20px rgba(16,185,129,0.15)'" onmouseout="this.style.borderColor='var(--border)'; this.style.transform='none'; this.style.boxShadow='none'">
+                <span style="font-size:32px;">🐙</span>
+                <div>
+                  <div style="font-weight:700; color:var(--text); font-size:1.05rem;">پروفایل گیت‌هاب (GitHub)</div>
+                  <div class="muted small" style="color:#10b981; font-weight:600; direction:ltr; text-align:right;">github.com/mohsen-niksirat</div>
+                </div>
+              </a>
+            </div>
+          </article>
+
+          <div class="grid-2" style="margin-top:20px; gap:20px;">
+            <article class="card" style="border-radius:16px; padding:22px;">
+              <h3 style="margin-bottom:14px; display:flex; align-items:center; gap:10px; font-size:1.15rem;">
+                <svg style="width:22px; height:22px; fill:var(--ok);"><use href="#i-check"/></svg>
+                <span>ویژگی‌های کلیدی نسخه ۳</span>
+              </h3>
+              <ul style="line-height:2; font-size:0.92rem; color:var(--muted); list-style-type:square;">
+                <li><b style="color:var(--text);">TUN Mode لایه ۳ با Wintun:</b> هدایت تمامی اتصالات شبکه ویندوز بدون تداخل یا افت سرعت با معماری مجازی L3.</li>
+                <li><b style="color:var(--text);">سیستم Multi-Account هوشمند:</b> افزودن چند اکانت فایرفاکس و سوییچ خودکار نامحسوس پس از مصرف سهمیه ۵۰ گیگابایت.</li>
+                <li><b style="color:var(--text);">پروتکل‌های HTTP/2 و HTTP/3 (QUIC):</b> دور زدن انسدادهای TLS و کاهش شدید پینگ با پکت‌های UDP.</li>
+                <li><b style="color:var(--text);">تفکیک هوشمند مسیر (Smart Routing):</b> اتصال مستقیم به سایت‌ها، سرویس‌های دولتی و بانکی ایران بدون عبور از VPN.</li>
+                <li><b style="color:var(--text);">پروکسی لوکال SOCKS5 و HTTP:</b> پشتیبانی همزمان در پورت ۱۰۸۱۰ برای اتصال مستقیم گوشی، تلگرام و نرم‌افزارهای خارجی.</li>
+              </ul>
+            </article>
+
+            <article class="card" style="border-radius:16px; padding:22px;">
+              <h3 style="margin-bottom:14px; display:flex; align-items:center; gap:10px; font-size:1.15rem;">
+                <svg style="width:22px; height:22px; fill:var(--accent);"><use href="#i-star"/></svg>
+                <span>منابع و قدردانی (Credits)</span>
+              </h3>
+              <ul style="line-height:2; font-size:0.92rem; color:var(--muted); list-style-type:square;">
+                <li><b style="color:var(--text);">توسعه، تلفیق و مهندسی TUN ویندوز:</b> محسن نیک‌سیرت (Mohsen Niksirat)</li>
+                <li><b style="color:var(--text);">ریپازیتوری مرجع کلاینت فایرفاکس:</b> armanlife / firefox-vpn-client</li>
+                <li><b style="color:var(--text);">پروژه کلاینت اندروید FoxyVPN:</b> Vauth</li>
+                <li><b style="color:var(--text);">درایور هسته Wintun:</b> پروژه وایرگارد (WireGuard Project)</li>
+                <li><b style="color:var(--text);">موتور سبک hev-socks5-tunnel:</b> Heiher</li>
+                <li><b style="color:var(--text);">مجوز نرم‌افزار:</b> MIT License (کاملاً آزاد و رایگان برای استفاده شخصی و عمومی)</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+        <!-- =========================================================== help -->
+        <section id="view-help" class="view" hidden>
+          <div class="help-grid">
+            <article class="card help-card wide" id="help-connect">
+              <h3>Connecting applications</h3>
+              <p>Any application that can use a SOCKS5 or HTTP proxy can use this one: v2rayN, v2rayNG, NekoBox, a browser, Telegram, and others. Their traffic to any website goes through Mozilla's VPN servers; it is not limited to Mozilla. The same address serves SOCKS5 and HTTP proxy clients.</p>
+              <div class="help-fields">
+                <div class="help-field"><span>SOCKS5 address</span><code id="help-socks-addr">127.0.0.1:10810</code><button type="button" class="btn sm" id="help-copy-addr"><svg><use href="#i-copy"/></svg><span>Copy</span></button></div>
+                <div class="help-field"><span>Link for v2rayN, v2rayNG, NekoBox</span><code id="help-socks-link">socks://Og@127.0.0.1:10810</code><button type="button" class="btn sm" id="help-copy-link"><svg><use href="#i-copy"/></svg><span>Copy</span></button></div>
+              </div>
+              <ul>
+                <li>v2rayN, v2rayNG, NekoBox: copy the link and import it from the clipboard, or add a SOCKS server with the address above.</li>
+                <li>Another device, such as a phone: set the SOCKS5 listen address to <code>0.0.0.0:10810</code> and a SOCKS5 username and password in Settings, then use this computer's network address instead of <code>127.0.0.1</code>.</li>
+              </ul>
+            </article>
+
+            <article class="card help-card" id="help-ports">
+              <h3>Only ports 80, 443, 8080, and 8443</h3>
+              <p>Mozilla's proxy connects to the web ports <strong>80, 443, 8080, and 8443</strong> only. Every other port is refused by Mozilla's server, for example <code>http://203.0.113.5:9898/</code>, SSH (22), mail (25, 465, 587, 993), or DNS (53). This program cannot change that, with one exception: git over SSH to GitHub goes to GitHub's SSH server on port 443 by itself.</p>
+              <ul>
+                <li>Serve your own site on one of the four ports (8080 and 8443 are the usual choices).</li>
+                <li>Or let the browser reach that address directly: Firefox, Settings, Network Settings, <em>No proxy for</em>.</li>
+              </ul>
+            </article>
+
+            <article class="card help-card" id="help-udp">
+              <h3>TCP only, no UDP</h3>
+              <p>Mozilla's proxy carries TCP connections. UDP does not go through it, so online games, voice and video calls in some applications, and other UDP traffic do not work through this proxy. Browsers are not affected: they use HTTP/2 over TCP when HTTP/3 is not available.</p>
+            </article>
+
+            <article class="card help-card" id="help-routing">
+              <h3>Your country's sites directly (routing)</h3>
+              <p>Optional, in Settings, Routing. The sites and networks of the chosen region (Iran by default; also China, Russia, Afghanistan, Turkey, Indonesia, or Brazil) then go directly through your own internet: faster, not refused for a foreign address, and without using the accounts' quota; everything else still goes through Mozilla. The lists of domains and networks are downloaded by themselves every 10 days. A site reached directly sees your real address.</p>
+            </article>
+            <article class="card help-card" id="help-logs">
+              <h3>Logs</h3>
+              <p>The Logs page shows the live log. The files are in the data folder's <code>logs</code> folder, one per day, kept for seven days.</p>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <dialog id="signin-dialog">
+    <form id="signin-form" method="dialog" class="dialog-body">
+      <div class="dialog-head">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div>
+          <h2>Add Firefox Account</h2>
+          <p class="muted small">The account joins the rotation at the end of the list.</p>
+        </div>
+      </div>
+      <p class="banner warn small" id="signin-warning" hidden>This dashboard is not on this computer. The Firefox Account password is sent over the network without encryption.</p>
+      <div id="signin-start">
+        <label class="field"><span>Email</span><input name="email" type="email" autocomplete="off" required></label>
+        <label class="field"><span>Password</span><input name="password" class="secret" autocomplete="off" spellcheck="false" autocapitalize="off" data-reveal data-1p-ignore data-lpignore="true" data-bwignore required></label>
+        <p class="muted small">The password is saved encrypted in the data folder. When the account's tokens stop working and cannot be renewed, the program uses it to sign in again by itself (Auto re-login).</p>
+      </div>
+      <div id="signin-step" hidden>
+        <p id="signin-message" class="step-message"></p>
+        <img id="signin-captcha" alt="CAPTCHA" hidden>
+        <label class="field" id="signin-input-label" hidden><span id="signin-input-caption">Code</span><input name="value" autocomplete="one-time-code"></label>
+      </div>
+      <p class="form-error" id="signin-error"></p>
+      <div class="dialog-actions">
+        <button type="button" id="signin-cancel" class="btn">Cancel</button>
+        <button type="submit" id="signin-submit" class="btn primary">Sign in</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" hidden></div>
+</body>
+</html>

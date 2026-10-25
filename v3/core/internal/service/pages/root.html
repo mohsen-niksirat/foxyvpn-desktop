@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Running</title>
+<style>
+  :root { --bg: #0f1218; --card: #171b23; --text: #e8ebf1; --muted: #8b93a3; --ok: #34c77b; --ring: rgba(52, 199, 123, .35); }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #f3f5f9; --card: #ffffff; --text: #18202c; --muted: #667085; --ok: #12a35b; --ring: rgba(18, 163, 91, .25); }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    display: grid; place-items: center; padding: 24px;
+    background: radial-gradient(1200px 600px at 50% -10%, var(--ring), transparent 60%), var(--bg);
+    color: var(--text); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .card {
+    width: min(420px, 100%); padding: 40px 32px; text-align: center; border-radius: 20px;
+    background: var(--card); box-shadow: 0 20px 50px rgba(0, 0, 0, .18);
+  }
+  .dot { position: relative; width: 18px; height: 18px; margin: 0 auto 24px; border-radius: 50%; background: var(--ok); }
+  .dot::after {
+    content: ""; position: absolute; inset: -10px; border-radius: 50%; border: 3px solid var(--ok);
+    opacity: 0; animation: pulse 2.4s ease-out infinite;
+  }
+  @keyframes pulse { 0% { transform: scale(.5); opacity: .8; } 100% { transform: scale(1.6); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .dot::after { animation: none; } }
+  h1 { margin: 0 0 8px; font-size: 26px; font-weight: 650; letter-spacing: -.01em; }
+  p { margin: 0; color: var(--muted); }
+</style>
+</head>
+<body>
+  <main class="card">
+    <div class="dot" aria-hidden="true"></div>
+    <h1>Up and running</h1>
+    <p>The service is working normally.</p>
+  </main>
+</body>
+</html>

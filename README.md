@@ -45,8 +45,8 @@ Server endpoints come from Mozilla Remote Settings
 |---|---|---|
 | 1 | Login → proxy pass → H2 tunnel → exit-IP probe → test SOCKS5 | ✅ working |
 | 2 | Web UI (Connect/Settings/About tabs), HTTP+SOCKS5 proxies, auto pass renewal, traffic stats, token cache | ✅ working |
-| 3 | TUN Mode (system-wide VPN via hev-socks5-tunnel + wintun, embedded) | ✅ implemented (needs Windows admin test) |
-| 4 | Windows Credential Manager token storage | planned |
+| 3 | TUN Mode (system-wide VPN via hev-socks5-tunnel + wintun, embedded) | ✅ working (v3.0 Release) |
+| 4 | Multi-Account Rotation, HTTP/3 QUIC, Modern Web UI | ✅ working (v3.0 Release) |
 
 ## Build
 

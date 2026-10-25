@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel">VPN</string>
+    <string name="notification_connecting">در حال اتصال…</string>
+    <string name="notification_no_network">اتصال اینترنت برقرار نیست</string>
+    <string name="notification_proxy">فقط پروکسی · %1$s</string>
+    <string name="notification_stop">قطع اتصال</string>
+    <!-- The home-screen widget: its name and description in the widget
+         picker, and what its button does (for screen readers). -->
+    <string name="widget_label">اتصال سریع</string>
+    <string name="widget_description">اتصال یا قطع اتصال با یک ضربه</string>
+    <string name="widget_connect">برای اتصال ضربه بزنید</string>
+    <string name="widget_disconnect">برای قطع اتصال ضربه بزنید</string>
+</resources>

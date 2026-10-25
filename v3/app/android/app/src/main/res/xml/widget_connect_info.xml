@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The home-screen widget: a 1x1 connect/disconnect button. It is updated
+  when the state changes (ConnectWidget.updateAll), so it needs no periodic
+  update; after a reboot the system's update shows it off.
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="40dp"
+    android:minHeight="40dp"
+    android:targetCellWidth="1"
+    android:targetCellHeight="1"
+    android:resizeMode="none"
+    android:updatePeriodMillis="0"
+    android:initialLayout="@layout/widget_connect"
+    android:previewLayout="@layout/widget_connect_preview"
+    android:previewImage="@drawable/widget_button_on"
+    android:description="@string/widget_description"
+    android:widgetCategory="home_screen" />

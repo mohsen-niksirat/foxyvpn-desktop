@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel">VPN</string>
+    <string name="notification_connecting">Подключение…</string>
+    <string name="notification_no_network">Нет подключения к интернету</string>
+    <string name="notification_proxy">Только прокси · %1$s</string>
+    <string name="notification_stop">Отключить</string>
+    <!-- The home-screen widget: its name and description in the widget
+         picker, and what its button does (for screen readers). -->
+    <string name="widget_label">Быстрое подключение</string>
+    <string name="widget_description">Подключение и отключение одним нажатием</string>
+    <string name="widget_connect">Нажмите, чтобы подключиться</string>
+    <string name="widget_disconnect">Нажмите, чтобы отключиться</string>
+</resources>

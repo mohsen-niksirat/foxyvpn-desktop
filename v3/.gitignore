@@ -1,0 +1,66 @@
+# Builds. dist/ may hold a data folder with account credentials.
+/dist/
+*.exe
+!core/internal/tun/bin/*.exe
+*.aar
+*.apk
+*.aab
+*.ipa
+*.dmg
+*.msix
+/core/cmd/firefox-vpn-core/firefox-vpn-core
+/core/firefox-vpn-core*
+# The core's Windows resources (icon, version), made by the build:
+# go generate ./cmd/firefox-vpn-core
+/core/cmd/firefox-vpn-core/rsrc_windows_*.syso
+# gomobile's output for the Android app (core.aar, core-sources.jar),
+# rebuilt from core/ (see core/doc/DEVELOPMENT.md).
+/app/android/app/libs/
+
+# Portable data folders (config, account credentials, tokens, logs).
+data/
+user-data/
+h3-test-data/
+# scripts/h3-test.py writes its report next to itself.
+/scripts/report.txt
+
+# Secrets, wherever they end up.
+credentials.json
+secret.key
+local-api.token
+dashboard.key
+*.jks
+*.keystore
+key.properties
+.env
+.env.*
+*.pem
+# Public root certificates the Android core embeds (no key): source.
+!/core/mobile/extra-roots.pem
+*.p12
+*.p8
+*.mobileprovision
+*.provisionprofile
+
+# Logs
+*.log
+logs/
+
+# Go tooling output
+*.test
+*.out
+*.prof
+coverage.*
+
+# Python
+__pycache__/
+*.pyc
+
+# Editors and operating systems
+.idea/
+.vscode/
+*.iml
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini

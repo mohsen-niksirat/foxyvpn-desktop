@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel">VPN</string>
+    <string name="notification_connecting">Bağlanıyor…</string>
+    <string name="notification_no_network">İnternet bağlantısı yok</string>
+    <string name="notification_proxy">Yalnızca proxy · %1$s</string>
+    <string name="notification_stop">Bağlantıyı kes</string>
+    <!-- The home-screen widget: its name and description in the widget
+         picker, and what its button does (for screen readers). -->
+    <string name="widget_label">Hızlı bağlantı</string>
+    <string name="widget_description">Tek dokunuşla bağlanın veya bağlantıyı kesin</string>
+    <string name="widget_connect">Bağlanmak için dokunun</string>
+    <string name="widget_disconnect">Bağlantıyı kesmek için dokunun</string>
+</resources>

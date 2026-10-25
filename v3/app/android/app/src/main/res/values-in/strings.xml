@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel">VPN</string>
+    <string name="notification_connecting">Menghubungkan…</string>
+    <string name="notification_no_network">Tidak ada koneksi internet</string>
+    <string name="notification_proxy">Hanya proxy · %1$s</string>
+    <string name="notification_stop">Putuskan</string>
+    <!-- The home-screen widget: its name and description in the widget
+         picker, and what its button does (for screen readers). -->
+    <string name="widget_label">Sambung cepat</string>
+    <string name="widget_description">Terhubung atau putuskan koneksi dengan satu ketukan</string>
+    <string name="widget_connect">Ketuk untuk terhubung</string>
+    <string name="widget_disconnect">Ketuk untuk memutus koneksi</string>
+</resources>

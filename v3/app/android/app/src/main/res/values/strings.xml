@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- A placeholder until the final name is chosen. -->
+    <string name="app_name">Firefox VPN</string>
+    <string name="notification_channel">VPN</string>
+    <string name="notification_connecting">Connecting…</string>
+    <string name="notification_no_network">No internet connection</string>
+    <string name="notification_proxy">Proxy only · %1$s</string>
+    <string name="notification_stop">Disconnect</string>
+    <!-- The home-screen widget: its name and description in the widget
+         picker, and what its button does (for screen readers). -->
+    <string name="widget_label">Quick connect</string>
+    <string name="widget_description">Connect or disconnect with one tap</string>
+    <string name="widget_connect">Tap to connect</string>
+    <string name="widget_disconnect">Tap to disconnect</string>
+</resources>

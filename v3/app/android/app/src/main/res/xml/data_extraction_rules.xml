@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cloud backup and device-to-device transfer (Android 12 and later), as
+     backup_rules.xml: everything but what the core makes again. -->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="file" path="core/logs/" />
+        <exclude domain="file" path="core/routing/" />
+        <exclude domain="file" path="core/servers.json" />
+        <exclude domain="file" path="core/status.json" />
+        <exclude domain="file" path="core/local-api.token" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="file" path="core/logs/" />
+        <exclude domain="file" path="core/routing/" />
+        <exclude domain="file" path="core/servers.json" />
+        <exclude domain="file" path="core/status.json" />
+        <exclude domain="file" path="core/local-api.token" />
+    </device-transfer>
+</data-extraction-rules>

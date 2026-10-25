@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel">VPN</string>
+    <string name="notification_connecting">Csatlakozás…</string>
+    <string name="notification_no_network">Nincs internetkapcsolat</string>
+    <string name="notification_proxy">Csak proxy · %1$s</string>
+    <string name="notification_stop">Kapcsolat bontása</string>
+    <!-- The home-screen widget: its name and description in the widget
+         picker, and what its button does (for screen readers). -->
+    <string name="widget_label">Gyors csatlakozás</string>
+    <string name="widget_description">Csatlakozás vagy a kapcsolat bontása egy koppintással</string>
+    <string name="widget_connect">Koppintson a csatlakozáshoz</string>
+    <string name="widget_disconnect">Koppintson a kapcsolat bontásához</string>
+</resources>

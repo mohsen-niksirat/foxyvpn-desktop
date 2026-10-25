@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The widget picker's preview (Android 12+): the button, connected. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="4dp">
+    <!-- fitCenter keeps the disc round in any cell shape. -->
+    <ImageView
+        android:id="@+id/widget_button"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:contentDescription="@string/widget_disconnect"
+        android:scaleType="fitCenter"
+        android:src="@drawable/widget_button_on" />
+</FrameLayout>

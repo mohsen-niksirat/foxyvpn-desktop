@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel">VPN</string>
+    <string name="notification_connecting">Connexion…</string>
+    <string name="notification_no_network">Pas de connexion Internet</string>
+    <string name="notification_proxy">Proxy uniquement · %1$s</string>
+    <string name="notification_stop">Déconnecter</string>
+    <!-- The home-screen widget: its name and description in the widget
+         picker, and what its button does (for screen readers). -->
+    <string name="widget_label">Connexion rapide</string>
+    <string name="widget_description">Connexion ou déconnexion en une touche</string>
+    <string name="widget_connect">Touchez pour vous connecter</string>
+    <string name="widget_disconnect">Touchez pour vous déconnecter</string>
+</resources>

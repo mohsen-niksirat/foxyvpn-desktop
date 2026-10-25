@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel">VPN</string>
+    <string name="notification_connecting">Đang kết nối…</string>
+    <string name="notification_no_network">Không có kết nối internet</string>
+    <string name="notification_proxy">Chỉ proxy · %1$s</string>
+    <string name="notification_stop">Ngắt kết nối</string>
+    <!-- The home-screen widget: its name and description in the widget
+         picker, and what its button does (for screen readers). -->
+    <string name="widget_label">Kết nối nhanh</string>
+    <string name="widget_description">Kết nối hoặc ngắt kết nối chỉ với một chạm</string>
+    <string name="widget_connect">Chạm để kết nối</string>
+    <string name="widget_disconnect">Chạm để ngắt kết nối</string>
+</resources>
