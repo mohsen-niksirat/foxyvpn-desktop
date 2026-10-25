@@ -2,7 +2,7 @@ module github.com/mohsen-niksirat/foxyvpn-desktop
 
 go 1.26.0
 
-replace firefox-vpn-client => /tmp/fvp-lib
+replace firefox-vpn-client => github.com/UjuiUjuMandan/firefox-vpn-client v0.0.0-20260822124323-5b29eebc2766
 
 require (
 	firefox-vpn-client v0.0.0-20260822124323-5b29eebc2766
